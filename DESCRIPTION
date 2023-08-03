@@ -2,9 +2,9 @@ Package: DataMiningWithR
 Title: What the Package Does (One Line, Title Case)
 Version: 0.0.0.9000
 Authors@R: 
-    person("First", "Last", , "first.last@example.com", role = c("aut", "cre"),
-           comment = c(ORCID = "YOUR-ORCID-ID"))
-Description: What the package does (one paragraph).
+    person("Rajesh", "Kalakoti", , "rajeshkalakoti@gmail.com", role = c("aut", "cre"),
+           comment = c(ORCID = "0000-0001-7390-8034"))
+Description: Data Mining from scratch.
 License: `use_mit_license()`, `use_gpl3_license()` or friends to pick a
     license
 Encoding: UTF-8
