@@ -104,5 +104,65 @@ mahalanobis_distance <- function(point1, point2) {
 }
 
 
+#' Canberra Distance between Two Vectors
+#'
+#' Calculate the Canberra distance between two vectors.
+#'
+#' @param point1 A numeric vector representing the first vector.
+#' @param point2 A numeric vector representing the second vector.
+#'
+#' @return The Canberra distance (a scalar value).
+#' @export
+#'
+#' @examples
+#' point1 <- c(1, 2, 3)
+#' point2 <- c(4, 5, 6)
+#' canberra_distance(point1, point2)
+canberra_distance <- function(point1, point2) {
+  if (!is.numeric(point1) || !is.numeric(point2) || length(point1) != length(point2)) {
+    stop("Invalid input: point1 and point2 should be numeric vectors of the same length.")
+  }
+
+  n <- length(point1)
+
+  # Calculate the Canberra distance
+  distance <- sum(abs(point1 - point2) / (abs(point1) + abs(point2)))
+
+  return(distance)
+}
+
+
+
+#' Cosine Distance between Two Vectors
+#'
+#' Calculate the cosine distance between two vectors.
+#'
+#' @param point1 A numeric vector representing the first vector.
+#' @param point2 A numeric vector representing the second vector.
+#'
+#' @return The cosine distance (a scalar value).
+#' @export
+#'
+#' @examples
+#' point1 <- c(1, 2, 3)
+#' point2 <- c(4, 5, 6)
+#' cosine_distance(point1, point2)
+cosine_distance <- function(point1, point2) {
+  if (!is.numeric(point1) || !is.numeric(point2) || length(point1) != length(point2)) {
+    stop("Invalid input: point1 and point2 should be numeric vectors of the same length.")
+  }
+
+  # Calculate the dot product of the two vectors
+  dot_product <- sum(point1 * point2)
+
+  # Calculate the magnitudes of the two vectors
+  magnitude_point1 <- sqrt(sum(point1^2))
+  magnitude_point2 <- sqrt(sum(point2^2))
+
+  # Calculate the cosine distance
+  distance <- 1 - (dot_product / (magnitude_point1 * magnitude_point2))
+
+  return(distance)
+}
 
 
