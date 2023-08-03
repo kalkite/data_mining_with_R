@@ -9,20 +9,17 @@ This repository contains R code and functions for data mining and distance calcu
     ├── Makefile           <- Makefile with commands like `make data` or `make train.`
     ├── README.md          <- The top-level README for developers using this project.
     ├── data
-    │   ├── external       <- Data from third party sources.
-    │   ├── interim        <- Intermediate data that has been transformed.
-    │   ├── processed      <- The final, canonical data sets for modeling.
-    │   └── raw            <- The original, immutable data dump.
+    │   ├── processed      <- The final canonical data sets for modelling.
     │
-    ├── DESCRIPTION               <- A default Sphinx project; see sphinx-doc.org for details
+    ├── DESCRIPTION        <- This file contains metadata and package dependencies information for the R package.
     │
-    ├── man            <- Trained and serialized models, model predictions, or model summaries
+    ├── man                <- directory contains the R documentation (Rd) files for the custom distance functions implemented in this project.
     │
-    ├── NAMESPACE          <- Jupyter notebooks. Naming convention is a number (for ordering),
-    │                         the creator's initials, and a short `-` delimited description, e.g.
-    ├── R                         `1.0-jqp-initial-data-exploration`.
+    ├── NAMESPACE          <- This file specifies which functions and objects in the package should be made available to the users.
+    │                       
+    ├── R                  <- This directory contains the main R code files.
     │
-    ├── RMarkDown         <- Data dictionaries, manuals, and all other explanatory materials.
+    ├── RMarkDown         <- This directory contains R Markdown files with examples and explanations of this project's data mining techniques and distance calculations.
     
 
 ## License
