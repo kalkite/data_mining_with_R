@@ -19,7 +19,7 @@ This repository contains R code and functions for data mining and distance calcu
     │                       
     ├── R                  <- This directory contains the main R code files.
     │
-    ├── RMarkDown         <- This directory contains R Markdown files with examples and explanations of this project's data mining techniques and distance calculations.
+    ├── RMarkDown         <- This directory contains R Markdown files with examples and explanations. 
     
 
 ## License
