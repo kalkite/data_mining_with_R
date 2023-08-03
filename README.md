@@ -4,21 +4,26 @@ This repository contains R code and functions for data mining and distance calcu
 
 ## Project Structure
 
-├── data
-├── DataMiningWithR.Rproj
-├── DESCRIPTION
-├── man
-│   ├── canberra_distance.Rd
-│   ├── chebyshev_distance.Rd
-│   ├── cosine_distance.Rd
-│   ├── euclidean_distance.Rd
-│   ├── mahalanobis_distance.Rd
-│   └── manhattan_distance.Rd
-├── NAMESPACE
-├── R
-│   ├── distance_functions.R
-│   └── utils.R
-└── RMarkDown
+
+    ├── LICENSE
+    ├── Makefile           <- Makefile with commands like `make data` or `make train`
+    ├── README.md          <- The top-level README for developers using this project.
+    ├── data
+    │   ├── external       <- Data from third party sources.
+    │   ├── interim        <- Intermediate data that has been transformed.
+    │   ├── processed      <- The final, canonical data sets for modeling.
+    │   └── raw            <- The original, immutable data dump.
+    │
+    ├── docs               <- A default Sphinx project; see sphinx-doc.org for details
+    │
+    ├── models             <- Trained and serialized models, model predictions, or model summaries
+    │
+    ├── notebooks          <- Jupyter notebooks. Naming convention is a number (for ordering),
+    │                         the creator's initials, and a short `-` delimited description, e.g.
+    │                         `1.0-jqp-initial-data-exploration`.
+    │
+    ├── references         <- Data dictionaries, manuals, and all other explanatory materials.
+    
 ## Getting Started
 
 To use the functions in this project, you can simply load the R project in RStudio and explore the R code files in the `R` directory. The main functions for distance calculations can be found in `distance_functions.R`, and utility functions are available in `utils.R`.
