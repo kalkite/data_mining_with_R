@@ -1,30 +1,24 @@
-# data_mining_with_R
-Data mining with R from scratch for autumn  semester 
-
 # Data Mining with R
 
 This repository contains R code and functions for data mining and distance calculation.
 
 ## Project Structure
 
-The project is structured as follows:
-
-- **data**: This directory contains the datasets used in the data mining functions and examples.
-
-- **man**: This directory contains the R documentation (Rd) files for the custom distance functions implemented in this project.
-
-- **R**: This directory contains the main R code files.
-    - `distance_functions.R`: This file contains custom R functions for calculating different distance metrics such as Canberra distance, Chebyshev distance, Cosine distance, Euclidean distance, Mahalanobis distance, and Manhattan distance.
-    - `utils.R`: This file contains utility functions used by the main R code files.
-
-- **RMarkDown**: This directory contains R Markdown files with examples and explanations of the data mining techniques and distance calculations used in this project.
-
-- **DESCRIPTION**: This file contains metadata and package dependencies information for the R package.
-
-- **DataMiningWithR.Rproj**: This is the RStudio project file.
-
-- **NAMESPACE**: This file specifies which functions and objects in the package should be made available to the users.
-
+├── data
+├── DataMiningWithR.Rproj
+├── DESCRIPTION
+├── man
+│   ├── canberra_distance.Rd
+│   ├── chebyshev_distance.Rd
+│   ├── cosine_distance.Rd
+│   ├── euclidean_distance.Rd
+│   ├── mahalanobis_distance.Rd
+│   └── manhattan_distance.Rd
+├── NAMESPACE
+├── R
+│   ├── distance_functions.R
+│   └── utils.R
+└── RMarkDown
 ## Getting Started
 
 To use the functions in this project, you can simply load the R project in RStudio and explore the R code files in the `R` directory. The main functions for distance calculations can be found in `distance_functions.R`, and utility functions are available in `utils.R`.
