@@ -54,7 +54,7 @@ manhattan_distance <- function(point1, point2) {
 #' @param point1 A numeric vector representing the first point.
 #' @param point2 A numeric vector representing the second point.
 #'
-#'
+#'WWWWWW
 #' @details The Chebyshev distance distance between two points
 #' calculated as:\deqn{S(x,y) = max_i(|x_i - y_i|)}
 
@@ -82,6 +82,10 @@ chebyshev_distance <- function(point1, point2) {
 #' @param point1 A numeric vector representing the first vector.
 #' @param point2 A numeric vector representing the second vector.
 #'
+#' @details The Mahalanobis distance distance between two points
+#' calculated as:
+#' \deqn{S(x,y) = \sqrt{\sum_{i=1}^{n} (x-y)^T C^{-1}(x-y)}}
+#' where \eqn{C} is the Covariance matrix.
 #' @return The Mahalanobis distance (a scalar value).
 #' @export
 #'
@@ -121,6 +125,11 @@ mahalanobis_distance <- function(point1, point2) {
 #' @param point1 A numeric vector representing the first vector.
 #' @param point2 A numeric vector representing the second vector.
 #'
+#' @details The Canberra distance distance between two points
+#' calculated as:
+#' \deqn{S(x,y) = \sum\limits_{i=1}^{n} \frac{|x_i - y_i|}{|x_i| + |y_i|} }
+#'
+#'
 #' @return The Canberra distance (a scalar value).
 #' @export
 #'
@@ -151,6 +160,11 @@ canberra_distance <- function(point1, point2) {
 #'
 #' @return The cosine distance (a scalar value).
 #' @export
+#' @details The Cosine similarity is the measure of the angle between two vectors
+#' \deqn{S(x,y) =  \frac{x \cdot y}{\|x\| \|y\| }}
+#'
+#' Cosine distance calculated as
+#' \deqn{S(x,y) =  1 - S_c(x,y) }
 #'
 #' @examples
 #' point1 <- c(1, 2, 3)
