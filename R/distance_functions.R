@@ -3,6 +3,9 @@
 #' @param point1 a numeric vector representing the first point.
 #' @param point2 a numeric vector representing the second point.
 #'
+#' @details The Euclidean distance between two points
+#' calculated as:\deqn{S(x,y) = \sqrt{\sum_{i=1}^{n} (x_i - y_i)^2}}
+#'
 #' @return The Euclidean distance (a scalar value).
 #' @export
 #'
@@ -24,6 +27,9 @@ euclidean_distance <- function(point1, point2) {
 #'
 #' @param point1  numeric vector representing the first point.
 #' @param point2  numeric vector representing the second point.
+#'
+#' @details The Manhattan distance distance between two points
+#' calculated as:\deqn{S(x,y) = \sum_{i=1}^{n} |x_i - y_i|}
 #'
 #' @return The Manhattan distance (a scalar value).
 #' @export
@@ -48,6 +54,10 @@ manhattan_distance <- function(point1, point2) {
 #' @param point1 A numeric vector representing the first point.
 #' @param point2 A numeric vector representing the second point.
 #'
+#'
+#' @details The Chebyshev distance distance between two points
+#' calculated as:\deqn{S(x,y) = max_i(|x_i - y_i|)}
+
 #' @return The Chebyshev distance (a scalar value).
 #' @export
 #'
