@@ -17,6 +17,13 @@ The cosine distance (a scalar value).
 \description{
 Calculate the cosine distance between two vectors.
 }
+\details{
+The Cosine similarity is the measure of the angle between two vectors
+\deqn{S(x,y) =  \frac{x \cdot y}{\|x\| \|y\| }}
+
+Cosine distance calculated as
+\deqn{S(x,y) =  1 - S_c(x,y) }
+}
 \examples{
 point1 <- c(1, 2, 3)
 point2 <- c(4, 5, 6)

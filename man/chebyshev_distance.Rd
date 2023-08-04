@@ -9,7 +9,9 @@ chebyshev_distance(point1, point2)
 \arguments{
 \item{point1}{A numeric vector representing the first point.}
 
-\item{point2}{A numeric vector representing the second point.}
+\item{point2}{A numeric vector representing the second point.
+
+WWWWWW}
 }
 \value{
 The Chebyshev distance (a scalar value).

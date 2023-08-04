@@ -17,6 +17,11 @@ The Canberra distance (a scalar value).
 \description{
 Calculate the Canberra distance between two vectors.
 }
+\details{
+The Canberra distance distance between two points
+calculated as:
+\deqn{S(x,y) = \sum\limits_{i=1}^{n} \frac{|x_i - y_i|}{|x_i| + |y_i|} }
+}
 \examples{
 point1 <- c(1, 2, 3)
 point2 <- c(4, 5, 6)

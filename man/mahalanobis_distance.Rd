@@ -17,6 +17,12 @@ The Mahalanobis distance (a scalar value).
 \description{
 Calculate the Mahalanobis distance between two vectors using a pseudo-inverse approach.
 }
+\details{
+The Mahalanobis distance distance between two points
+calculated as:
+\deqn{S(x,y) = \sqrt{\sum_{i=1}^{n} (x-y)^T C^{-1}(x-y)}}
+where \eqn{C} is the Covariance matrix.
+}
 \examples{
 point1 <- c(1, 2, 3)
 point2 <- c(4, 5, 6)
