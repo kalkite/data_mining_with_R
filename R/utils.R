@@ -4,8 +4,9 @@
 #'
 #' @return The entropy value calculated from the input probability distribution.
 #' @details The entropy of a random variable X with probability distribution P is
-#'  calculated as: \deqn{E(v_i)= -\sum_{i} p_i \cdot \log_2(p_j)}{-sum(p(x_i) * log2(p(x_i)))},
+#' calculated as: \deqn{-\sum_{i} p(x_i) \cdot \log_2(p(x_i))}{-sum(p(x_i) * log2(p(x_i)))},
 #' where \eqn{p(x_i)}{p(x_i)} is the probability of outcome \eqn{x_i}{x_i}.
+#'
 #' @export
 #'
 #' @examples
