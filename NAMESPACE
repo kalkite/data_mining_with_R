@@ -3,6 +3,7 @@
 export(canberra_distance)
 export(chebyshev_distance)
 export(cosine_distance)
+export(entropy)
 export(euclidean_distance)
 export(mahalanobis_distance)
 export(manhattan_distance)
