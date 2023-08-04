@@ -19,6 +19,10 @@ The Euclidean distance (a scalar value).
 Euclidean Distance
 Calculate the Euclidean distance between two points in n-dimensional space.
 }
+\details{
+The Euclidean distance between two points
+calculated as:\deqn{S(x,y) = \sqrt{\sum_{i=1}^{n} (x_i - y_i)^2}}
+}
 \examples{
 euclidean_distance(c(1, 2, 3), c(4, 5, 6))
 }

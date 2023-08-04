@@ -17,6 +17,10 @@ The Manhattan distance (a scalar value).
 \description{
 Calculate the Manhattan distance between two points in n-dimensional space.
 }
+\details{
+The Manhattan distance distance between two points
+calculated as:\deqn{S(x,y) = \sum_{i=1}^{n} |x_i - y_i|}
+}
 \examples{
 manhattan_distance(c(1, 2, 3), c(4, 5, 6))
 }

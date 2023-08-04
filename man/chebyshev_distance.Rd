@@ -17,6 +17,10 @@ The Chebyshev distance (a scalar value).
 \description{
 Calculate the Chebyshev distance between two points in n-dimensional space.
 }
+\details{
+The Chebyshev distance distance between two points
+calculated as:\deqn{S(x,y) = max_i(|x_i - y_i|)}
+}
 \examples{
 chebyshev_distance(c(1, 2, 3), c(4, 5, 6))
 }
