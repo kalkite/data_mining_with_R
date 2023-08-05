@@ -1,2 +1,4 @@
+^renv$
+^renv\.lock$
 ^DataMiningWithR\.Rproj$
 ^\.Rproj\.user$
