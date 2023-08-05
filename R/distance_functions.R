@@ -192,3 +192,48 @@ cosine_distance <- function(point1, point2) {
 
 
 
+
+
+#' Minkowski Distance
+#'
+#' This function calculates the Minkowski distance between two numeric vectors
+#' \code{vector1} and \code{vector2}, using the parameter \code{p_value} to determine
+#' the order of the distance.
+#'
+#' @param vector1 A numeric vector representing the first point.
+#' @param vector2 A numeric vector representing the second point.
+#' @param p_value A numeric value representing the order of the Minkowski distance.
+#'
+#' @return The Minkowski distance between \code{vector1} and \code{vector2} using the
+#' specified \code{p_value}.
+#'
+#' @details calculated as
+#' \deqn{S(x,y) =  (\sum\limits_{i=1}^{n} |x_i - y_i|^p)^{1/p}}
+#'
+#' @examples
+#' # Example usage
+#' vector1 <- c(1, 2, 3)
+#' vector2 <- c(4, 5, 6)
+#' p_value <- 2
+#' distance <- minkowski_distance(vector1, vector2, p_value)
+minkowski_distance <- function(vector1, vector2, p_value) {
+  if (length(vector1) != length(vector2)) {
+    stop("Input vectors must have the same length.")
+  }
+
+  distance <- sum(abs(vector1 - vector2)^p_value)^(1/p_value)
+
+  return(distance)
+}
+
+
+
+
+
+
+
+
+
+
+
+
