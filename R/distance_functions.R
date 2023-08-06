@@ -75,7 +75,7 @@ chebyshev_distance <- function(point1, point2) {
 
 
 
-#' Mahalanobis Distance between Two Vectors (Pseudo-inverse approach)
+#' Mahalanobis Distance
 #'
 #' Calculate the Mahalanobis distance between two vectors using a pseudo-inverse approach.
 #'
@@ -118,7 +118,7 @@ mahalanobis_distance <- function(point1, point2) {
 }
 
 
-#' Canberra Distance between Two Vectors
+#' Canberra Distance
 #'
 #' Calculate the Canberra distance between two vectors.
 #'
@@ -151,7 +151,7 @@ canberra_distance <- function(point1, point2) {
 }
 
 # ************************ # Chebshev distance # ********************************
-#' Cosine Distance between Two Vectors
+#' Cosine Distance
 #'
 #' Calculate the cosine distance between two vectors.
 #'
