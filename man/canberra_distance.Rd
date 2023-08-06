@@ -2,7 +2,7 @@
 % Please edit documentation in R/distance_functions.R
 \name{canberra_distance}
 \alias{canberra_distance}
-\title{Canberra Distance between Two Vectors}
+\title{Canberra Distance}
 \usage{
 canberra_distance(point1, point2)
 }

@@ -2,7 +2,7 @@
 % Please edit documentation in R/distance_functions.R
 \name{mahalanobis_distance}
 \alias{mahalanobis_distance}
-\title{Mahalanobis Distance between Two Vectors (Pseudo-inverse approach)}
+\title{Mahalanobis Distance}
 \usage{
 mahalanobis_distance(point1, point2)
 }

@@ -2,7 +2,7 @@
 % Please edit documentation in R/distance_functions.R
 \name{cosine_distance}
 \alias{cosine_distance}
-\title{Cosine Distance between Two Vectors}
+\title{Cosine Distance}
 \usage{
 cosine_distance(point1, point2)
 }
