@@ -20,11 +20,13 @@ entropy <- function(probs) {
     stop("Probabilities must sum up to 1.")
   }
 
-  # Remove zero probabilities to avoid issues with log(0)
+
   probs <- probs[probs > 0]
 
-  # Calculate entropy
   entropy_value <- -sum(probs * log2(probs))
 
   return(entropy_value)
 }
+
+
+
