@@ -29,8 +29,7 @@ entropy <- function(probs) {
 }
 
 
-<<<<<<< HEAD
-=======
+
 #' Calculate Stirling Numbers of the Second Kind
 #'
 #'A brute-force or exhaustive algorithm for finding a good clustering is to simply
@@ -40,7 +39,7 @@ entropy <- function(probs) {
 #'is given by the Stirling numbers of the second kind,
 #'
 #'
-#'\deqn{S(n,k) = \frac{1}{k!}\sum_{t=0}^{k} (-1)^t \binom{a}{b} (k-t)^n}
+#'\deqn{S(n,k) = \frac{1}{k!}\sum_{t=0}^{k} (-1)^t \binom{k}{t} (k-t)^n}
 #'
 #' Each point can be assigned to any one of the \eqn{k} clusters, so there are at
 #' most \eqn{k^n} possible clusterings. However, any permutation of the \eqn{n} clusters within a
@@ -79,18 +78,4 @@ stirling_second <- function(n, k) {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
->>>>>>> f4209f3 (utils)
 
