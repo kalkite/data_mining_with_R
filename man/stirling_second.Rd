@@ -22,7 +22,7 @@ exact number of ways of partitioning \eqn{n} points into \eqn{k} non-empty and d
 is given by the Stirling numbers of the second kind,
 }
 \details{
-\deqn{S(n,k) = \frac{1}{k!}\sum_{t=0}^{k} (-1)^t \binom{a}{b} (k-t)^n}
+\deqn{S(n,k) = \frac{1}{k!}\sum_{t=0}^{k} (-1)^t \binom{k}{t} (k-t)^n}
 
 Each point can be assigned to any one of the \eqn{k} clusters, so there are at
 most \eqn{k^n} possible clusterings. However, any permutation of the \eqn{n} clusters within a
