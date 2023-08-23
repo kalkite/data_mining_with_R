@@ -3,24 +3,90 @@ title: "week1"
 author: "Rajesh Kalakoti"
 date: "2023-08-03"
 output:
-  pdf_document: default
+  pdf_document:
+    latex_engine: xelatex
+    keep_tex: yes
   html_document: default
+  word_document: default
+header-includes:
+  - \usepackage[linesnumbered,ruled,lined,boxed]{algorithm2e}
+  - \usepackage{amsmath}  # For math symbols like \mathbb
+  - \usepackage{amsfonts} # For math fonts like \mathbb
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(reticulate)
 ```
 
-## R Markdown
+* Packages
+    + [devtools](https://www.r-project.org/nosvn/pandoc/devtools.html) 
+    + [tidyverse](https://www.tidyverse.org/packages/) 
+        - sub-sub-item 1
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
 
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
 
-```{r cars}
-source("../R/utils.R")
+## Clustering
 
-```
+Given a clustering \(C = \{C_1, C_2, \ldots, C_k\}\), we need some scoring function that evaluates its quality or goodness. This sum of squared errors scoring function is defined as:
+\[ W(C) = \frac{1}{2} \sum_{k=1}^{K} \sum_{i: C(i)=k} \|x_i - \bar{x}_k\|^2 \]
+
+The goal is to find the clustering that minimizes:
+
+\[ C^* = \arg \min_C \{ W(c) \} \]
+
+K-means employs a greedy iterative approach to find a clustering that minimizes loss function. 
+
+
+## Algorithm 13.1: K-means Algorithm
+**K-means** (*D*, *k*, *ε*):
+1. Initialize \(t = 0\). Randomly initialize \(k\) centroids: \(\mu_{t1},
+\mu_{t2}, \ldots, \mu_{tk} \in \mathbb{R}^d\). 3. **repeat** 4.   \(t \leftarrow
+t + 1\).
+   **// Cluster Assignment Step**
+5.   **foreach** \(x_j \in D\) **do** 6.     \(j^* \leftarrow \arg \min_i \|x_j
+- \mu_{ti}\|^2\).
+   **// Assign \(x_j\) to closest centroid**
+7.     \(C_{j^*} \leftarrow C_{j^*} \cup \{x_j\}\).
+   **// Centroid Update Step**
+8.   **foreach** \(i = 1\) **to** \(k\) **do** 9.     \(\mu_{ti} \leftarrow
+\frac{1}{|C_i|} \sum_{x_j \in C_i} x_j\).
+     **until** \(\sum_{i=1}^k \|\mu_{ti} - \mu_{t-1i}\|^2 \leq \varepsilon\).
+
+
+
+\begin{algorithm}
+\LinesNumbered % Add line numbers to the algorithm
+\caption{K-means Algorithm}
+\KwData{$D, k, \varepsilon$}
+\KwResult{Result $y$}
+
+\textbf{K-means}($D, k, \varepsilon$) {
+  
+  $t \leftarrow 0$\;
+  Randomly initialize $k$ centroids: $\mu_{1}^{t}, \mu_{2}^{t}, \ldots, \mu_{n}^{t} \in \mathbb{R}^d$\;
+  \Repeat{termination condition}{
+    $t \leftarrow t+1$\;
+    /* Cluster assignment step */
+    
+    \For{$x_j \in D$}{
+      $j^* \leftarrow \text{argmin}_i \{||x_j - \mu_{i}^t||^2 \}$\;
+      /* assign $x_j$ to closest centroid */
+      
+      $C_{j^*} \leftarrow C_{j^*} \cup \{x_j\}$\;
+    }
+  }
+  Perform additional steps\;
+  \For{$i = 1$ to $n$}{
+    Update $y \leftarrow y \times x$\;
+  }
+  \textbf{return} $y$\;
+}
+\end{algorithm}
+
+
+
 
 Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
 ```{r}

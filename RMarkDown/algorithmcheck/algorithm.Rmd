@@ -1,0 +1,28 @@
+---
+title: "week1"
+author: "Rajesh Kalakoti"
+date: "2023-08-03"
+output:
+  pdf_document:
+    latex_engine: xelatex
+header-includes:
+  - "\\usepackage{algorithm}"
+  - "\\usepackage{algorithmic}"
+---
+
+# Your R Markdown content here
+
+Here's an example algorithm using LaTeX:
+
+\begin{algorithm}
+\caption{Example Algorithm}
+\begin{algorithmic}[1]
+\REQUIRE $n \geq 0$
+\ENSURE $y = x^n$
+\STATE $y \leftarrow 1$
+\FOR{$i = 1$ to $n$}
+\STATE $y \leftarrow y \times x$
+\ENDFOR
+\RETURN $y$
+\end{algorithmic}
+\end{algorithm}
