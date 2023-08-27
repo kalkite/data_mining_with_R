@@ -11,7 +11,8 @@ output:
 header-includes:
   - \usepackage[linesnumbered,ruled,lined,boxed]{algorithm2e}
   - \usepackage{amsmath}  # For math symbols like \mathbb
-  - \usepackage{amsfonts} # For math fonts like \mathbb
+  - \usepackage{amsfonts}
+  - \usepackage{placeins} # For math fonts like \mathbb
 ---
 
 ```{r setup, include=FALSE}
@@ -24,7 +25,7 @@ library(here)
 * Packages
     + [devtools](https://www.r-project.org/nosvn/pandoc/devtools.html) 
     + [tidyverse](https://www.tidyverse.org/packages/)
-    + [here]
+    + here
 
 
 ```{r}
@@ -44,13 +45,8 @@ The goal is to find the clustering that minimizes:
 
 \[ C^* = \arg \min_C \{ W(c) \} \]
 
-
-
 K-means employs a greedy iterative approach to find a clustering that minimizes loss function. 
-
-
-
-\begin{algorithm}
+\begin{algorithm}[ht!]
 \LinesNumbered % Add line numbers to the algorithm
 \caption{K-means Algorithm}
 \KwData{$D, k, \varepsilon$}

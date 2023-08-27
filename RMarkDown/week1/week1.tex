@@ -97,6 +97,7 @@
 \usepackage[linesnumbered,ruled,lined,boxed]{algorithm2e}
 \usepackage{amsmath}
 \usepackage{amsfonts}
+\usepackage{placeins}
 \ifLuaTeX
   \usepackage{selnolig}  % disable illegal ligatures
 \fi
@@ -128,7 +129,7 @@
   \item
     \href{https://www.tidyverse.org/packages/}{tidyverse}
   \item
-    {[}here{]}
+    here
   \end{itemize}
 \end{itemize}
 
@@ -156,7 +157,7 @@ The goal is to find the clustering that minimizes:
 K-means employs a greedy iterative approach to find a clustering that
 minimizes loss function.
 
-\begin{algorithm}
+\begin{algorithm}[ht!]
 \LinesNumbered % Add line numbers to the algorithm
 \caption{K-means Algorithm}
 \KwData{$D, k, \varepsilon$}
