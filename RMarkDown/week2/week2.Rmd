@@ -1,0 +1,17 @@
+---
+title: "week2"
+author: "Rajesh Kalakoti"
+date: "2023-08-03"
+output:
+  pdf_document:
+    latex_engine: xelatex
+    keep_tex: yes
+  html_document: default
+  word_document: default
+header-includes:
+  - \usepackage[linesnumbered,ruled,lined,boxed]{algorithm2e}
+  - \usepackage{amsmath}  # For math symbols like \mathbb
+  - \usepackage{amsfonts} # For math fonts like \mathbb
+---
+
+
