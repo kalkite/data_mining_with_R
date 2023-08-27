@@ -14,7 +14,7 @@ header-includes:
 
 Here's an example algorithm using LaTeX:
 
-\begin{algorithm}
+\begin{algorithm}[!htb]
 \caption{Example Algorithm}
 \begin{algorithmic}[1]
 \REQUIRE $n \geq 0$
