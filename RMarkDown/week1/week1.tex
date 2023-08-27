@@ -149,13 +149,12 @@ minimizes loss function.
 \LinesNumbered % Add line numbers to the algorithm
 \caption{K-means Algorithm}
 \KwData{$D, k, \varepsilon$}
-\KwResult{Result $y$}
 
-\textbf{K-means}($D, k, \varepsilon$) {
+\textbf{K-means}($D, k, \varepsilon$): {
   
   $t \leftarrow 0$\;
   Randomly initialize $k$ centroids: $\mu_{1}^{t}, \mu_{2}^{t}, \ldots, \mu_{n}^{t} \in \mathbb{R}^d$\;
-  \Repeat{termination condition}{
+  \Repeat{$\sum_{i=1}^{k} ||\mu_{i}^t - \mu_{i}^{t-1}||^2 \le \varepsilon $}{
     $t \leftarrow t+1$\;
     $C_i \leftarrow \emptyset$ for all \(i = 1, \ldots, k\)
     
@@ -332,5 +331,34 @@ chunk to prevent printing of the R code that generated the plot.
 \end{Shaded}
 
 \includegraphics{week1_files/figure-latex/unnamed-chunk-4-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{library}\NormalTok{(here)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## here() starts at /home/rajeshkalakoti/Documents/data_mining_with_R
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Include the script from the R directory}
+\NormalTok{project\_path }\OtherTok{\textless{}{-}} \FunctionTok{here}\NormalTok{()}
+\FunctionTok{source}\NormalTok{(}\FunctionTok{here}\NormalTok{(}\StringTok{"R"}\NormalTok{, }\StringTok{"utils.R"}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{?entropy}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## No documentation for 'entropy' in specified packages and libraries:
+## you could try '??entropy'
+\end{verbatim}
 
 \end{document}

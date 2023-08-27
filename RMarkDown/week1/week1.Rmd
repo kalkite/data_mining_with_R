@@ -45,13 +45,12 @@ K-means employs a greedy iterative approach to find a clustering that minimizes 
 \LinesNumbered % Add line numbers to the algorithm
 \caption{K-means Algorithm}
 \KwData{$D, k, \varepsilon$}
-\KwResult{Result $y$}
 
-\textbf{K-means}($D, k, \varepsilon$) {
+\textbf{K-means}($D, k, \varepsilon$): {
   
   $t \leftarrow 0$\;
   Randomly initialize $k$ centroids: $\mu_{1}^{t}, \mu_{2}^{t}, \ldots, \mu_{n}^{t} \in \mathbb{R}^d$\;
-  \Repeat{termination condition}{
+  \Repeat{$\sum_{i=1}^{k} ||\mu_{i}^t - \mu_{i}^{t-1}||^2 \le \varepsilon $}{
     $t \leftarrow t+1$\;
     $C_i \leftarrow \emptyset$ for all \(i = 1, \ldots, k\)
     
@@ -212,9 +211,17 @@ layout(1)
 
 
 ```
+
+
 ```{r include_script, eval=TRUE}
+library(here)
 # Include the script from the R directory
-source("../R/utils.R")
+project_path <- here()
+source(here("R", "utils.R"))
+```
+
+```{r}
+?entropy
 ```
 
 
