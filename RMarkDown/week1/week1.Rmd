@@ -18,12 +18,21 @@ header-includes:
 knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
 library(reticulate)
+library(here)
 ```
 
 * Packages
     + [devtools](https://www.r-project.org/nosvn/pandoc/devtools.html) 
-    + [tidyverse](https://www.tidyverse.org/packages/) 
+    + [tidyverse](https://www.tidyverse.org/packages/)
+    + [here]
 
+
+```{r}
+# Include the script from the R directory
+project_path <- here()
+source(here("R", "utils.R"))
+source(here("R","distance_functions.R"))
+```
 
 
 # Clustering
@@ -214,7 +223,6 @@ layout(1)
 
 
 ```{r include_script, eval=TRUE}
-library(here)
 # Include the script from the R directory
 project_path <- here()
 source(here("R", "utils.R"))
