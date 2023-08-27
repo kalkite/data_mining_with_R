@@ -127,17 +127,11 @@
     \href{https://www.r-project.org/nosvn/pandoc/devtools.html}{devtools}
   \item
     \href{https://www.tidyverse.org/packages/}{tidyverse}
-
-    \begin{itemize}
-    \tightlist
-    \item
-      sub-sub-item 1
-    \end{itemize}
   \end{itemize}
 \end{itemize}
 
 \hypertarget{clustering}{%
-\subsection{Clustering}\label{clustering}}
+\section{Clustering}\label{clustering}}
 
 Given a clustering \(C = \{C_1, C_2, \ldots, C_k\}\), we need some
 scoring function that evaluates its quality or goodness. This sum of
@@ -151,23 +145,6 @@ The goal is to find the clustering that minimizes:
 K-means employs a greedy iterative approach to find a clustering that
 minimizes loss function.
 
-\hypertarget{algorithm-13.1-k-means-algorithm}{%
-\subsection{Algorithm 13.1: K-means
-Algorithm}\label{algorithm-13.1-k-means-algorithm}}
-
-\textbf{K-means} (\emph{D}, \emph{k}, \emph{ε}): 1. Initialize
-\(t = 0\). Randomly initialize \(k\) centroids:
-\(\mu_{t1}, \mu_{t2}, \ldots, \mu_{tk} \in \mathbb{R}^d\). 3.
-\textbf{repeat} 4. \(t \leftarrow t + 1\). \textbf{// Cluster Assignment
-Step} 5. \textbf{foreach} \(x_j \in D\) \textbf{do} 6.
-\(j^* \leftarrow \arg \min_i \|x_j - \mu_{ti}\|^2\). \textbf{// Assign
-\(x_j\) to closest centroid} 7.
-\(C_{j^*} \leftarrow C_{j^*} \cup \{x_j\}\). \textbf{// Centroid Update
-Step} 8. \textbf{foreach} \(i = 1\) \textbf{to} \(k\) \textbf{do} 9.
-\(\mu_{ti} \leftarrow \frac{1}{|C_i|} \sum_{x_j \in C_i} x_j\).
-\textbf{until}
-\(\sum_{i=1}^k \|\mu_{ti} - \mu_{t-1i}\|^2 \leq \varepsilon\).
-
 \begin{algorithm}
 \LinesNumbered % Add line numbers to the algorithm
 \caption{K-means Algorithm}
@@ -180,20 +157,23 @@ Step} 8. \textbf{foreach} \(i = 1\) \textbf{to} \(k\) \textbf{do} 9.
   Randomly initialize $k$ centroids: $\mu_{1}^{t}, \mu_{2}^{t}, \ldots, \mu_{n}^{t} \in \mathbb{R}^d$\;
   \Repeat{termination condition}{
     $t \leftarrow t+1$\;
+    $C_i \leftarrow \emptyset$ for all \(i = 1, \ldots, k\)
+    
     /* Cluster assignment step */
+
     
     \For{$x_j \in D$}{
-      $j^* \leftarrow \text{argmin}_i \{||x_j - \mu_{i}^t||^2 \}$\;
+      $i^* \leftarrow \text{argmin}_i \{||x_j - \mu_{i}^{t-1}||^2 \}$\;
       /* assign $x_j$ to closest centroid */
       
-      $C_{j^*} \leftarrow C_{j^*} \cup \{x_j\}$\;
+      $C_{i^*} \leftarrow C_{i^*} \cup \{x_j\}$\;
+    }
+    
+        
+    \For{$i = 1, .., k $}{
+      $  \mu_{i}^{t} \leftarrow \frac{1}{|C_i|} \sum_{x_j \in C_i} X_j $
     }
   }
-  Perform additional steps\;
-  \For{$i = 1$ to $n$}{
-    Update $y \leftarrow y \times x$\;
-  }
-  \textbf{return} $y$\;
 }
 \end{algorithm}
 
@@ -202,13 +182,155 @@ chunk to prevent printing of the R code that generated the plot.
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{?entropy}
+\NormalTok{euclidean\_dist }\OtherTok{\textless{}{-}} \ControlFlowTok{function}\NormalTok{(point1, point2) \{}
+\NormalTok{  squared\_diff }\OtherTok{\textless{}{-}}\NormalTok{ (point1 }\SpecialCharTok{{-}}\NormalTok{ point2)}\SpecialCharTok{\^{}}\DecValTok{2}
+  \FunctionTok{sqrt}\NormalTok{(}\FunctionTok{sum}\NormalTok{(squared\_diff))}
+\NormalTok{\}}
+
+\NormalTok{x }\OtherTok{\textless{}{-}}\NormalTok{ y }\OtherTok{\textless{}{-}} \FunctionTok{seq}\NormalTok{(}\SpecialCharTok{{-}}\DecValTok{1}\NormalTok{, }\DecValTok{1}\NormalTok{, }\AttributeTok{length =} \DecValTok{20}\NormalTok{)}
+\NormalTok{grid }\OtherTok{\textless{}{-}} \FunctionTok{expand.grid}\NormalTok{(}\AttributeTok{x =}\NormalTok{ x, }\AttributeTok{y =}\NormalTok{ y)  }\CommentTok{\# Create a grid of points}
+\NormalTok{z }\OtherTok{\textless{}{-}} \FunctionTok{matrix}\NormalTok{(}\DecValTok{0}\NormalTok{, }\AttributeTok{nrow =} \FunctionTok{length}\NormalTok{(x), }\AttributeTok{ncol =} \FunctionTok{length}\NormalTok{(y))  }\CommentTok{\# Initialize the z matrix}
+
+\ControlFlowTok{for}\NormalTok{ (i }\ControlFlowTok{in} \DecValTok{1}\SpecialCharTok{:}\FunctionTok{length}\NormalTok{(x)) \{}
+  \ControlFlowTok{for}\NormalTok{ (j }\ControlFlowTok{in} \DecValTok{1}\SpecialCharTok{:}\FunctionTok{length}\NormalTok{(y)) \{}
+\NormalTok{    z[i, j] }\OtherTok{\textless{}{-}} \FunctionTok{euclidean\_dist}\NormalTok{(}\FunctionTok{c}\NormalTok{(x[i], y[j]), }\FunctionTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{, }\DecValTok{0}\NormalTok{))}
+\NormalTok{  \}}
+\NormalTok{\}}
+\FunctionTok{persp}\NormalTok{(x, y, z,}
+      \AttributeTok{main =} \StringTok{"3D Plot of Euclidean Distance"}\NormalTok{,}
+      \AttributeTok{zlab =} \StringTok{"Distance"}\NormalTok{,}
+      \AttributeTok{theta =} \DecValTok{30}\NormalTok{, }\AttributeTok{phi =} \DecValTok{15}\NormalTok{,}
+      \AttributeTok{col =} \StringTok{"springgreen"}\NormalTok{, }\AttributeTok{shade =} \FloatTok{0.5}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
 
-\begin{verbatim}
-## No documentation for 'entropy' in specified packages and libraries:
-## you could try '??entropy'
-\end{verbatim}
+\includegraphics{week1_files/figure-latex/unnamed-chunk-1-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{cone1 }\OtherTok{\textless{}{-}} \ControlFlowTok{function}\NormalTok{(x, y)\{}
+\FunctionTok{sqrt}\NormalTok{(x}\SpecialCharTok{\^{}}\DecValTok{2}\SpecialCharTok{+}\NormalTok{y}\SpecialCharTok{\^{}}\DecValTok{2}\NormalTok{)}
+\NormalTok{\}}
+
+\NormalTok{x }\OtherTok{\textless{}{-}}\NormalTok{ y }\OtherTok{\textless{}{-}} \FunctionTok{seq}\NormalTok{(}\SpecialCharTok{{-}}\DecValTok{1}\NormalTok{, }\DecValTok{1}\NormalTok{, }\AttributeTok{length=} \DecValTok{20}\NormalTok{)}
+\NormalTok{z }\OtherTok{\textless{}{-}} \FunctionTok{outer}\NormalTok{(x, y, cone1)}
+
+\FunctionTok{persp}\NormalTok{(x, y, z,}
+\AttributeTok{main=}\StringTok{"Perspective Plot of a Cone"}\NormalTok{,}
+\AttributeTok{zlab =} \StringTok{"Height"}\NormalTok{,}
+\AttributeTok{theta =} \DecValTok{30}\NormalTok{, }\AttributeTok{phi =} \DecValTok{15}\NormalTok{,}
+\AttributeTok{col =} \StringTok{"springgreen"}\NormalTok{, }\AttributeTok{shade =} \FloatTok{0.5}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{week1_files/figure-latex/unnamed-chunk-2-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{euclidean\_dist }\OtherTok{\textless{}{-}} \ControlFlowTok{function}\NormalTok{(point1, point2) \{}
+\NormalTok{  squared\_diff }\OtherTok{\textless{}{-}}\NormalTok{ (point1 }\SpecialCharTok{{-}}\NormalTok{ point2)}\SpecialCharTok{\^{}}\DecValTok{2}
+  \FunctionTok{sqrt}\NormalTok{(}\FunctionTok{sum}\NormalTok{(squared\_diff))}
+\NormalTok{\}}
+
+\NormalTok{manhattan\_distance }\OtherTok{\textless{}{-}} \ControlFlowTok{function}\NormalTok{(point1, point2) \{}
+  \ControlFlowTok{if}\NormalTok{ (}\FunctionTok{length}\NormalTok{(point1) }\SpecialCharTok{!=} \FunctionTok{length}\NormalTok{(point2)) \{}
+    \FunctionTok{stop}\NormalTok{(}\StringTok{"Both points should have the same number of dimensions."}\NormalTok{)}
+\NormalTok{  \}}
+
+\NormalTok{  abs\_diff }\OtherTok{\textless{}{-}} \FunctionTok{abs}\NormalTok{(point1 }\SpecialCharTok{{-}}\NormalTok{ point2)}
+\NormalTok{  distance }\OtherTok{\textless{}{-}} \FunctionTok{sum}\NormalTok{(abs\_diff)}
+  \FunctionTok{return}\NormalTok{(distance)}
+\NormalTok{\}}
+
+\NormalTok{x }\OtherTok{\textless{}{-}}\NormalTok{ y }\OtherTok{\textless{}{-}} \FunctionTok{seq}\NormalTok{(}\SpecialCharTok{{-}}\DecValTok{1}\NormalTok{, }\DecValTok{1}\NormalTok{, }\AttributeTok{length =} \DecValTok{20}\NormalTok{)}
+\NormalTok{grid }\OtherTok{\textless{}{-}} \FunctionTok{expand.grid}\NormalTok{(}\AttributeTok{x =}\NormalTok{ x, }\AttributeTok{y =}\NormalTok{ y)  }\CommentTok{\# Create a grid of points}
+\NormalTok{z\_euclidean }\OtherTok{\textless{}{-}} \FunctionTok{matrix}\NormalTok{(}\DecValTok{0}\NormalTok{, }\AttributeTok{nrow =} \FunctionTok{length}\NormalTok{(x), }\AttributeTok{ncol =} \FunctionTok{length}\NormalTok{(y))  }\CommentTok{\# Initialize the z matrix for Euclidean distance}
+\NormalTok{z\_manhattan }\OtherTok{\textless{}{-}} \FunctionTok{matrix}\NormalTok{(}\DecValTok{0}\NormalTok{, }\AttributeTok{nrow =} \FunctionTok{length}\NormalTok{(x), }\AttributeTok{ncol =} \FunctionTok{length}\NormalTok{(y))   }\CommentTok{\# Initialize the z matrix for Manhattan distance}
+
+\ControlFlowTok{for}\NormalTok{ (i }\ControlFlowTok{in} \DecValTok{1}\SpecialCharTok{:}\FunctionTok{length}\NormalTok{(x)) \{}
+  \ControlFlowTok{for}\NormalTok{ (j }\ControlFlowTok{in} \DecValTok{1}\SpecialCharTok{:}\FunctionTok{length}\NormalTok{(y)) \{}
+\NormalTok{    z\_euclidean[i, j] }\OtherTok{\textless{}{-}} \FunctionTok{euclidean\_dist}\NormalTok{(}\FunctionTok{c}\NormalTok{(x[i], y[j]), }\FunctionTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{, }\DecValTok{0}\NormalTok{))}
+\NormalTok{    z\_manhattan[i, j] }\OtherTok{\textless{}{-}} \FunctionTok{manhattan\_distance}\NormalTok{(}\FunctionTok{c}\NormalTok{(x[i], y[j]), }\FunctionTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{, }\DecValTok{0}\NormalTok{))}
+\NormalTok{  \}}
+\NormalTok{\}}
+
+\CommentTok{\# Create a layout of subplots to show both Euclidean and Manhattan distances}
+\FunctionTok{par}\NormalTok{(}\AttributeTok{mfrow =} \FunctionTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{, }\DecValTok{2}\NormalTok{))}
+
+\CommentTok{\# Plot for Euclidean distance}
+\FunctionTok{persp}\NormalTok{(x, y, z\_euclidean,}
+      \AttributeTok{main =} \StringTok{"3D Plot of Euclidean Distance"}\NormalTok{,}
+      \AttributeTok{zlab =} \StringTok{"Distance"}\NormalTok{,}
+      \AttributeTok{theta =} \DecValTok{30}\NormalTok{, }\AttributeTok{phi =} \DecValTok{15}\NormalTok{,}
+      \AttributeTok{col =} \StringTok{"springgreen"}\NormalTok{, }\AttributeTok{shade =} \FloatTok{0.5}\NormalTok{)}
+
+\CommentTok{\# Plot for Manhattan distance}
+\FunctionTok{persp}\NormalTok{(x, y, z\_manhattan,}
+      \AttributeTok{main =} \StringTok{"3D Plot of Manhattan Distance"}\NormalTok{,}
+      \AttributeTok{zlab =} \StringTok{"Distance"}\NormalTok{,}
+      \AttributeTok{theta =} \DecValTok{30}\NormalTok{, }\AttributeTok{phi =} \DecValTok{15}\NormalTok{,}
+      \AttributeTok{col =} \StringTok{"springgreen"}\NormalTok{, }\AttributeTok{shade =} \FloatTok{0.5}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{week1_files/figure-latex/unnamed-chunk-3-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Reset the layout}
+\FunctionTok{par}\NormalTok{(}\AttributeTok{mfrow =} \FunctionTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{, }\DecValTok{1}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{euclidean\_dist }\OtherTok{\textless{}{-}} \ControlFlowTok{function}\NormalTok{(point1, point2) \{}
+\NormalTok{  squared\_diff }\OtherTok{\textless{}{-}}\NormalTok{ (point1 }\SpecialCharTok{{-}}\NormalTok{ point2)}\SpecialCharTok{\^{}}\DecValTok{2}
+  \FunctionTok{sqrt}\NormalTok{(}\FunctionTok{sum}\NormalTok{(squared\_diff))}
+\NormalTok{\}}
+
+\NormalTok{manhattan\_distance }\OtherTok{\textless{}{-}} \ControlFlowTok{function}\NormalTok{(point1, point2) \{}
+  \ControlFlowTok{if}\NormalTok{ (}\FunctionTok{length}\NormalTok{(point1) }\SpecialCharTok{!=} \FunctionTok{length}\NormalTok{(point2)) \{}
+    \FunctionTok{stop}\NormalTok{(}\StringTok{"Both points should have the same number of dimensions."}\NormalTok{)}
+\NormalTok{  \}}
+
+\NormalTok{  abs\_diff }\OtherTok{\textless{}{-}} \FunctionTok{abs}\NormalTok{(point1 }\SpecialCharTok{{-}}\NormalTok{ point2)}
+\NormalTok{  distance }\OtherTok{\textless{}{-}} \FunctionTok{sum}\NormalTok{(abs\_diff)}
+  \FunctionTok{return}\NormalTok{(distance)}
+\NormalTok{\}}
+
+\NormalTok{x }\OtherTok{\textless{}{-}}\NormalTok{ y }\OtherTok{\textless{}{-}} \FunctionTok{seq}\NormalTok{(}\SpecialCharTok{{-}}\DecValTok{5}\NormalTok{, }\DecValTok{5}\NormalTok{, }\AttributeTok{length =} \DecValTok{20}\NormalTok{)}
+\NormalTok{grid }\OtherTok{\textless{}{-}} \FunctionTok{expand.grid}\NormalTok{(}\AttributeTok{x =}\NormalTok{ x, }\AttributeTok{y =}\NormalTok{ y)  }\CommentTok{\# Create a grid of points}
+
+\NormalTok{z\_euclidean }\OtherTok{\textless{}{-}} \FunctionTok{matrix}\NormalTok{(}\DecValTok{0}\NormalTok{, }\AttributeTok{nrow =} \FunctionTok{length}\NormalTok{(x), }\AttributeTok{ncol =} \FunctionTok{length}\NormalTok{(y))  }\CommentTok{\# Initialize the z matrix for Euclidean distance}
+\NormalTok{z\_manhattan }\OtherTok{\textless{}{-}} \FunctionTok{matrix}\NormalTok{(}\DecValTok{0}\NormalTok{, }\AttributeTok{nrow =} \FunctionTok{length}\NormalTok{(x), }\AttributeTok{ncol =} \FunctionTok{length}\NormalTok{(y))   }\CommentTok{\# Initialize the z matrix for Manhattan distance}
+
+\ControlFlowTok{for}\NormalTok{ (i }\ControlFlowTok{in} \DecValTok{1}\SpecialCharTok{:}\FunctionTok{length}\NormalTok{(x)) \{}
+  \ControlFlowTok{for}\NormalTok{ (j }\ControlFlowTok{in} \DecValTok{1}\SpecialCharTok{:}\FunctionTok{length}\NormalTok{(y)) \{}
+\NormalTok{    z\_euclidean[i, j] }\OtherTok{\textless{}{-}} \FunctionTok{euclidean\_dist}\NormalTok{(}\FunctionTok{c}\NormalTok{(x[i], y[j]), }\FunctionTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{, }\DecValTok{0}\NormalTok{))}
+\NormalTok{    z\_manhattan[i, j] }\OtherTok{\textless{}{-}} \FunctionTok{manhattan\_distance}\NormalTok{(}\FunctionTok{c}\NormalTok{(x[i], y[j]), }\FunctionTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{, }\DecValTok{0}\NormalTok{))}
+\NormalTok{  \}}
+\NormalTok{\}}
+
+\CommentTok{\# Combine the distances and choose different colors for each}
+\NormalTok{combined\_distances }\OtherTok{\textless{}{-}}\NormalTok{ z\_euclidean }\SpecialCharTok{+}\NormalTok{ z\_manhattan}
+\NormalTok{color\_palette }\OtherTok{\textless{}{-}} \FunctionTok{colorRampPalette}\NormalTok{(}\FunctionTok{c}\NormalTok{(}\StringTok{"blue"}\NormalTok{, }\StringTok{"green"}\NormalTok{))(}\DecValTok{100}\NormalTok{)  }\CommentTok{\# Choose colors for mapping distances}
+
+\CommentTok{\# Create a layout of subplots}
+\FunctionTok{layout}\NormalTok{(}\FunctionTok{matrix}\NormalTok{(}\FunctionTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{, }\DecValTok{2}\NormalTok{), }\AttributeTok{nrow =} \DecValTok{1}\NormalTok{))}
+
+\CommentTok{\# Plot both distances on the same 3D plane with different colors}
+\FunctionTok{persp}\NormalTok{(x, y, combined\_distances,}
+      \AttributeTok{main =} \StringTok{"3D Plot of Combined Distances"}\NormalTok{,}
+      \AttributeTok{zlab =} \StringTok{"Distance"}\NormalTok{,}
+      \AttributeTok{theta =} \DecValTok{30}\NormalTok{, }\AttributeTok{phi =} \DecValTok{15}\NormalTok{,}
+      \AttributeTok{col =}\NormalTok{ color\_palette, }\AttributeTok{shade =} \FloatTok{0.5}\NormalTok{)}
+
+\CommentTok{\# Reset the layout}
+\FunctionTok{layout}\NormalTok{(}\DecValTok{1}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{week1_files/figure-latex/unnamed-chunk-4-1.pdf}
 
 \end{document}
