@@ -150,6 +150,8 @@ canberra_distance <- function(point1, point2) {
   return(distance)
 }
 
+
+
 # ************************ # Chebshev distance # ********************************
 #' Cosine Distance
 #'
