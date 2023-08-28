@@ -105,12 +105,12 @@
 \IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
 \urlstyle{same}
 \hypersetup{
-  pdftitle={week1},
+  pdftitle={Week-1},
   pdfauthor={Rajesh Kalakoti},
   hidelinks,
   pdfcreator={LaTeX via pandoc}}
 
-\title{week1}
+\title{Week-1}
 \author{Rajesh Kalakoti}
 \date{2023-08-03}
 
@@ -362,5 +362,169 @@ chunk to prevent printing of the R code that generated the plot.
 ## No documentation for 'entropy' in specified packages and libraries:
 ## you could try '??entropy'
 \end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{library}\NormalTok{(}\StringTok{"car"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Loading required package: carData
+\end{verbatim}
+
+\begin{verbatim}
+## 
+## Attaching package: 'car'
+\end{verbatim}
+
+\begin{verbatim}
+## The following object is masked from 'package:dplyr':
+## 
+##     recode
+\end{verbatim}
+
+\begin{verbatim}
+## The following object is masked from 'package:purrr':
+## 
+##     some
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{library}\NormalTok{(}\StringTok{"rgl"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## This build of rgl does not include OpenGL functions.  Use
+##  rglwidget() to display results, e.g. via options(rgl.printRglwidget = TRUE).
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{data}\NormalTok{(iris)}
+\FunctionTok{head}\NormalTok{(iris)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##   Sepal.Length Sepal.Width Petal.Length Petal.Width Species
+## 1          5.1         3.5          1.4         0.2  setosa
+## 2          4.9         3.0          1.4         0.2  setosa
+## 3          4.7         3.2          1.3         0.2  setosa
+## 4          4.6         3.1          1.5         0.2  setosa
+## 5          5.0         3.6          1.4         0.2  setosa
+## 6          5.4         3.9          1.7         0.4  setosa
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{sep.l }\OtherTok{\textless{}{-}}\NormalTok{ iris}\SpecialCharTok{$}\NormalTok{Sepal.Length}
+\NormalTok{sep.w }\OtherTok{\textless{}{-}}\NormalTok{ iris}\SpecialCharTok{$}\NormalTok{Sepal.Width}
+\NormalTok{pet.l }\OtherTok{\textless{}{-}}\NormalTok{ iris}\SpecialCharTok{$}\NormalTok{Petal.Length}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{library}\NormalTok{(}\StringTok{"car"}\NormalTok{)}
+\FunctionTok{library}\NormalTok{(}\StringTok{"rgl"}\NormalTok{)}
+\FunctionTok{data}\NormalTok{(iris)}
+\NormalTok{sep.l }\OtherTok{\textless{}{-}}\NormalTok{ iris}\SpecialCharTok{$}\NormalTok{Sepal.Length}
+\NormalTok{sep.w }\OtherTok{\textless{}{-}}\NormalTok{ iris}\SpecialCharTok{$}\NormalTok{Sepal.Width}
+\NormalTok{pet.l }\OtherTok{\textless{}{-}}\NormalTok{ iris}\SpecialCharTok{$}\NormalTok{Petal.Length}
+
+\NormalTok{save }\OtherTok{\textless{}{-}} \FunctionTok{getOption}\NormalTok{(}\StringTok{"rgl.useNULL"}\NormalTok{)}
+\FunctionTok{options}\NormalTok{(}\AttributeTok{rgl.useNULL =} \ConstantTok{TRUE}\NormalTok{)}
+\FunctionTok{scatter3d}\NormalTok{(}\AttributeTok{x =}\NormalTok{ sep.l, }\AttributeTok{y =}\NormalTok{ pet.l, }\AttributeTok{z =}\NormalTok{ sep.w, }\AttributeTok{groups =}\NormalTok{ iris}\SpecialCharTok{$}\NormalTok{Species,}
+          \AttributeTok{surface =} \ConstantTok{FALSE}\NormalTok{, }\AttributeTok{ellipsoid =} \ConstantTok{TRUE}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Loading required namespace: mgcv
+\end{verbatim}
+
+\begin{verbatim}
+## Loading required namespace: MASS
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{widget }\OtherTok{\textless{}{-}} \FunctionTok{rglwidget}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Warning in snapshot3d(scene = x, width = width, height = height): webshot =
+## TRUE requires the webshot2 package and Chrome browser; using rgl.snapshot()
+## instead
+\end{verbatim}
+
+\begin{verbatim}
+## Warning in rgl.snapshot(filename, fmt, top): this build of rgl does not support
+## snapshots
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Explicitly set the elementId property}
+\NormalTok{widget}\SpecialCharTok{$}\NormalTok{elementId }\OtherTok{\textless{}{-}} \StringTok{"my{-}rgl{-}plot"}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Warning in widget$elementId <- "my-rgl-plot": Coercing LHS to a list
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{widget}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [[1]]
+## [1] "../../../../../../tmp/Rtmp2ZAqzn/file94543ed88903.png"
+## 
+## $elementId
+## [1] "my-rgl-plot"
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\#}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{library}\NormalTok{(rgl)}
+
+\CommentTok{\# Load the Iris dataset}
+\FunctionTok{data}\NormalTok{(iris)}
+
+\CommentTok{\# Create an interactive 3D scatter plot}
+\FunctionTok{scatter3d}\NormalTok{(}\AttributeTok{x =}\NormalTok{ iris}\SpecialCharTok{$}\NormalTok{Sepal.Length, }\AttributeTok{y =}\NormalTok{ iris}\SpecialCharTok{$}\NormalTok{Petal.Length, }\AttributeTok{z =}\NormalTok{ iris}\SpecialCharTok{$}\NormalTok{Sepal.Width,}
+          \AttributeTok{groups =}\NormalTok{ iris}\SpecialCharTok{$}\NormalTok{Species, }\AttributeTok{surface =} \ConstantTok{FALSE}\NormalTok{, }\AttributeTok{ellipsoid =} \ConstantTok{TRUE}\NormalTok{)}
+
+\CommentTok{\# Display the interactive plot}
+\FunctionTok{rglwidget}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Warning in snapshot3d(scene = x, width = width, height = height): webshot =
+## TRUE requires the webshot2 package and Chrome browser; using rgl.snapshot()
+## instead
+\end{verbatim}
+
+\begin{verbatim}
+## Warning in rgl.snapshot(filename, fmt, top): this build of rgl does not support
+## snapshots
+\end{verbatim}
+
+\includegraphics[width=6.5in]{../../../../../../tmp/Rtmp2ZAqzn/file945464d20099}
 
 \end{document}

@@ -3,10 +3,10 @@ title: "Week-1"
 author: "Rajesh Kalakoti"
 date: "2023-08-03"
 output:
+  html_document: default
   pdf_document:
     latex_engine: xelatex
     keep_tex: yes
-  html_document: default
   word_document: default
 header-includes:
   - \usepackage[linesnumbered,ruled,lined,boxed]{algorithm2e}
@@ -227,6 +227,68 @@ source(here("R", "utils.R"))
 ```{r}
 ?entropy
 ```
+
+```{r}
+library("car")
+library("rgl")
+
+data(iris)
+head(iris)
+sep.l <- iris$Sepal.Length
+sep.w <- iris$Sepal.Width
+pet.l <- iris$Petal.Length
+```
+
+```{r}
+library("car")
+library("rgl")
+data(iris)
+sep.l <- iris$Sepal.Length
+sep.w <- iris$Sepal.Width
+pet.l <- iris$Petal.Length
+
+save <- getOption("rgl.useNULL")
+options(rgl.useNULL = TRUE)
+scatter3d(x = sep.l, y = pet.l, z = sep.w, groups = iris$Species,
+          surface = FALSE, ellipsoid = TRUE)
+
+ 
+
+widget <- rglwidget()
+
+# Explicitly set the elementId property
+widget$elementId <- "my-rgl-plot"
+widget
+#
+```
+
+
+```{r}
+library(rgl)
+
+# Load the Iris dataset
+data(iris)
+
+# Create an interactive 3D scatter plot
+scatter3d(x = iris$Sepal.Length, y = iris$Petal.Length, z = iris$Sepal.Width,
+          groups = iris$Species, surface = FALSE, ellipsoid = TRUE)
+
+# Display the interactive plot
+# rglwidget()
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

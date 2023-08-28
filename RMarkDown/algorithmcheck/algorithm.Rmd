@@ -12,7 +12,6 @@ header-includes:
 
 # Your R Markdown content here
 
-Here's an example algorithm using LaTeX:
 
 \begin{algorithm}[!htb]
 \caption{Example Algorithm}
