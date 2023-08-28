@@ -102,7 +102,6 @@ hopkins_stat <- function (X, m=ceiling(nrow(X)/10), d=ncol(X), k=1, U=NULL, meth
     stop("m must be no larger than num of samples")
 
   if(missing(U)) {
-    # U is a matrix of column-wise uniform values sampled from the space of X
     colmin <- apply(X, 2, min)
     colmax <- apply(X, 2, max)
     U <- matrix(0, ncol = ncol(X), nrow = m)
@@ -110,7 +109,7 @@ hopkins_stat <- function (X, m=ceiling(nrow(X)/10), d=ncol(X), k=1, U=NULL, meth
       U[, i] <- runif(m, min = colmin[i], max = colmax[i])
     }
   } else {
-    # The user has provided the uniform values in U.
+
   }
 
   # Random sample of m rows in X (without replacement)
@@ -118,18 +117,13 @@ hopkins_stat <- function (X, m=ceiling(nrow(X)/10), d=ncol(X), k=1, U=NULL, meth
   W <- X[j, , drop=FALSE]   # Need 'drop' in case X is single-column
 
   if(method=="simple") {
-    # distance between each row of W and each row of X
     dwx <- as.matrix(pdist(W,X))
-    # Caution: W[i,] is the same point as X[j[i],] and the distance between them is 0,
-    # but we do not want to consider that when calculating the minimum distance
-    # between W[i,] and X, so change the distance from 0 to Inf
+
     for(i in 1:m) dwx[i,j[i]] <- Inf
-    # distance from each row of W to the NEAREST row of X
     dwx <- apply(dwx, 1, min)
 
-    # distance between each row of U and each row of X
     dux <- as.matrix(pdist(U,X)) # rows of dux refer to U, cols refer to X
-    # distance from each row of U to the NEAREST row of X
+
     dux <- apply(dux, 1, min)
 
     hop <- sum(dux^d) / sum( dux^d + dwx^d )
@@ -137,8 +131,6 @@ hopkins_stat <- function (X, m=ceiling(nrow(X)/10), d=ncol(X), k=1, U=NULL, meth
   if(method=="torus") {
     rng <- t(apply(X,2,range))
 
-    # Note: Since W is a sample from X, the 1st nearest point in X will
-    # always be the same point with distance 0, so add 1 to k.
     nearw <- donut::nnt(X, W, k=k+1, torus=1:ncol(W), ranges=rng )
     dwx <- nearw$nn.dists[,k+1]
 
@@ -150,14 +142,11 @@ hopkins_stat <- function (X, m=ceiling(nrow(X)/10), d=ncol(X), k=1, U=NULL, meth
   }
 
   if(method=="boundedsphere" | method=="boundedcube"){
-    # distance between each row of W and each row of X
     dwx <- as.matrix(pdist(W,X))
     for(i in 1:m) dwx[i,j[i]] <- Inf
-    # distance from each row of W to the NEAREST row of X
     dwx <- apply(dwx, 1, min)
 
-    # distance between each row of U and each row of X
-    dux <- as.matrix(pdist(U,X)) # rows of dux refer to U, cols refer to X
+    dux <- as.matrix(pdist(U,X)) #
     dux <- apply(dux, 1, min)
 
     if(method=="boundedsphere") const <- 1
@@ -166,21 +155,53 @@ hopkins_stat <- function (X, m=ceiling(nrow(X)/10), d=ncol(X), k=1, U=NULL, meth
     wkd <- (const*dwx)^d
     N <- nrow(X)
 
-    # I *think* this is the formula of Rotondi, page 560-561.
-    # However, what happens if ukd=1? Then division by zero.
-    # Also, this is supposed to have Beta(kM,kM) distribution, so it should
-    # be between [0,1], but my example has values outside [0,1].
-    # Should X be scaled to unit hypercube/hypersphere???
     hop <- (N-k+1) * sum( ukd/(1-ukd) ) /
       sum( (N-k+1)*ukd/(1-ukd) + (N-k)*(wkd/(1-wkd)) )
   }
-
-  # You would think this would be faster, but it is not for our test cases:
-  # stat = 1 / (1 + sum(dwx^d) / sum( dux^d ) )
-
   return( hop )
 }
 
 
 
+hopkins_stat_pval <- function(x,n) {
+  if(x > 0.5)
+    1 - (pbeta(x, n, n) - pbeta(1-x, n, n) )
+  else
+    1 - (pbeta(1-x, n, n) - pbeta(x, n, n) )
+}
+
+if(0){
+  D <- 8 # dimension of data, columns(X)
+  N <- 5000 # number of events, rows(X)
+  M <- 8 # number of events sampled
+  B <- 1000 # number of simulations
+
+  #scale01 <- function(x){ (x-min(x))/(max(x)-min(x)) }
+  set.seed(12345)
+  hop1 <- hop2 <- NULL
+  for(ii in 1:B){
+    X <- matrix(runif(N*D, min=-1, max=1), ncol=D)
+    # calculate radial distance from origin for each point
+    rad <- apply(X, 1, function(x) sqrt(sum((x-0)^2)))
+    X <- X[rad < 1.0,]
+
+    # We need to scale the data into unit hypercube
+    # X <- apply(X, 2, scale01)
+    # Since this is a simulation study, we can use the first M rows
+    # as random origins in the unit hypersphere
+    hop1[ii] <- hopkins::hopkins(X[-c(1:M),], U=X[1:M,], m=M, d=D)
+    hop2[ii] <- hopkins::hopkins(X[-c(1:M),], U=X[1:M,], m=M, d=D, method="boundedsphere")
+  }
+
+  # Now the plots
+  plot(density(hop1), col="red", xlim=c(0,1), main="", xlab="", ylim=c(0,4))
+  lines(density(hop2), col="blue")
+  xv <- seq(0,1,length=100)
+  lines(xv, dbeta( xv, M, M) , col="black", lwd=2)
+  legend("topleft",
+         c("Hopkins", "Modified Hopkins", "Beta(M,M)"),
+         text.col=c("red","blue","black")
+  )
+
+}
 
