@@ -1,5 +1,5 @@
 ---
-title: "week2"
+title: "Week-2"
 author: "Rajesh Kalakoti"
 date: "2023-08-03"
 output:
@@ -10,15 +10,29 @@ output:
   word_document: default
 header-includes:
   - \usepackage[linesnumbered,ruled,lined,boxed]{algorithm2e}
-  - \usepackage{amsmath}  # For math symbols like \mathbb
-  - \usepackage{amsfonts} # For math fonts like \mathbb
+  - \usepackage{amsmath}
+  - \usepackage{amsfonts}
+  - \usepackage{placeins}
+  - \usepackage{float} # For math fonts like \mathbb
 ---
 
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(reticulate)
+library(here)
+```
+
+* Packages
+    + [devtools](https://www.r-project.org/nosvn/pandoc/devtools.html) 
+    + [tidyverse](https://www.tidyverse.org/packages/)
+    + here
 
 ```{r}
 library(here)
 project_path <- here()
 source(here("R","utils.R"))
+source(here("R","distance_functions.R"))
 ```
 
 ```{r}
@@ -29,7 +43,50 @@ iris_data <- iris[, 1:4]  # Selecting the first 4 columns (features)
 hopkins_value <- hopkins_stat(iris_data)
 print(hopkins_value)
 ```
+
+# Clustering
+
+Given a clustering \(C = \{C_1, C_2, \ldots, C_k\}\), we need some scoring function that evaluates its quality or goodness. This sum of squared errors scoring function is defined as:
+\[ W(C) = \frac{1}{2} \sum_{k=1}^{K} \sum_{i: C(i)=k} \|x_i - \bar{x}_k\|^2 \]
+The goal is to find the clustering that minimizes:
+\[ C^* = \arg \min_C \{ W(c) \} \]
+K-means employs a greedy iterative approach to find a clustering that minimizes loss function. 
+\begin{algorithm}
+\LinesNumbered % Add line numbers to the algorithm
+\caption{K-means Algorithm}
+\KwData{$D, k, \varepsilon$}
+
+\textbf{K-means}($D, k, \varepsilon$): {
+  
+  $t \leftarrow 0$\;
+  Randomly initialize $k$ centroids: $\mu_{1}^{t}, \mu_{2}^{t}, \ldots, \mu_{n}^{t} \in \mathbb{R}^d$\;
+  \Repeat{$\sum_{i=1}^{k} ||\mu_{i}^t - \mu_{i}^{t-1}||^2 \le \varepsilon $}{
+    $t \leftarrow t+1$\;
+    $C_i \leftarrow \emptyset$ for all \(i = 1, \ldots, k\)
+    
+    /* Cluster assignment step */
+
+    
+    \For{$x_j \in D$}{
+      $i^* \leftarrow \text{argmin}_i \{||x_j - \mu_{i}^{t-1}||^2 \}$\;
+      /* assign $x_j$ to closest centroid */
+      
+      $C_{i^*} \leftarrow C_{i^*} \cup \{x_j\}$\;
+    }
+    
+        
+    \For{$i = 1, .., k $}{
+      $  \mu_{i}^{t} \leftarrow \frac{1}{|C_i|} \sum_{x_j \in C_i} X_j $
+    }
+  }
+}
+\end{algorithm}
+
+
+
 ```{r}
-hopkins_stat_pval(0.21,10)
+
+
+
 ```
 
