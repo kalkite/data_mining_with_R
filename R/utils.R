@@ -189,8 +189,8 @@ if(0){
     # X <- apply(X, 2, scale01)
     # Since this is a simulation study, we can use the first M rows
     # as random origins in the unit hypersphere
-    hop1[ii] <- hopkins::hopkins(X[-c(1:M),], U=X[1:M,], m=M, d=D)
-    hop2[ii] <- hopkins::hopkins(X[-c(1:M),], U=X[1:M,], m=M, d=D, method="boundedsphere")
+    hop1[ii] <- hopkins_stat(X[-c(1:M),], U=X[1:M,], m=M, d=D)
+    hop2[ii] <- hopkins_stat(X[-c(1:M),], U=X[1:M,], m=M, d=D, method="boundedsphere")
   }
 
   # Now the plots
