@@ -3,10 +3,10 @@ title: "Week-1"
 author: "Rajesh Kalakoti"
 date: "2023-08-03"
 output:
-  html_document: default
   pdf_document:
     latex_engine: xelatex
     keep_tex: yes
+  html_document: default
   word_document: default
 header-includes:
   - \usepackage[linesnumbered,ruled,lined,boxed]{algorithm2e}
