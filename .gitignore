@@ -7,3 +7,5 @@ RMarkDown/*/*
 RMarkDown/*/*.docx
 RMarkDown/*/*.tex
 RMarkDown/*/*.html
+!RMarkDown/week1/*.pdf
+!RMarkDown/week1/*.Rmd
