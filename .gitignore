@@ -4,5 +4,6 @@
 RMarkDown/week1/week1_files/
 RMarkDown/week2/week2_files/
 RMarkDown/*/*
-!RMarkDown/*/*.Rmd
-!RMarkDown/*/*.pdf
+RMarkDown/*/*.docx
+RMarkDown/*/*.tex
+RMarkDown/*/*.html
