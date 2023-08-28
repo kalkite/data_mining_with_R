@@ -15,13 +15,18 @@ header-includes:
 ---
 
 
-
 ```{r}
-
-
+library(here)
+project_path <- here()
+source(here("R","utils.R"))
 ```
 
 ```{r}
-# Load the iris datase
+data(iris)
+iris_data <- iris[, 1:4]  # Selecting the first 4 columns (features)
+# Calculate the Hopkins statistic using the hopkins_stat function
+?hopkins_stat
+hopkins_value <- hopkins_stat(iris_data)
+print(hopkins_value)
 ```
 
