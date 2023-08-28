@@ -202,6 +202,7 @@ if(0){
          c("Hopkins", "Modified Hopkins", "Beta(M,M)"),
          text.col=c("red","blue","black")
   )
-
 }
+
+
 
