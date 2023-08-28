@@ -438,7 +438,7 @@ for (i in 1:length(x)) {
     z_euclidean[i, j] <- euclidean_dist(c(x[i], y[j]), c(0, 0))
     z_manhattan[i, j] <- manhattan_distance(c(x[i], y[j]), c(0, 0))
   }
-}
+}  
 
 # Combine the distances and choose different colors for each
 combined_distances <- z_euclidean + z_manhattan
@@ -474,6 +474,27 @@ rglwidget()
 
 
 
+```{r}
+library(rgl)
+euclidean_dist <- function(point1, point2) {
+squared_diff <- (point1 - point2)^2
+sqrt(sum(squared_diff))
+}
+x <- y <- seq(-1, 1, length = 20)
+grid <- expand.grid(x = x, y = y) # Create a grid of points
+z <- matrix(0, nrow = length(x), ncol = length(y)) # Initialize the z matrix
+for (i in 1:length(x)) {
+for (j in 1:length(y)) {
+z[i, j] <- euclidean_dist(c(x[i], y[j]), c(0, 0))
+}
+}
+persp3d(x, y, z,
+main = "3D Plot of Euclidean Distance",
+zlab = "Distance",
+theta = 30, phi = 15,
+col = "springgreen")
+rglwidget()
+```
 
 
 
