@@ -29,4 +29,7 @@ iris_data <- iris[, 1:4]  # Selecting the first 4 columns (features)
 hopkins_value <- hopkins_stat(iris_data)
 print(hopkins_value)
 ```
+```{r}
+hopkins_stat_pval(0.21,10)
+```
 
