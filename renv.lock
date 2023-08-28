@@ -839,18 +839,6 @@
       ],
       "Hash": "b59377caa7ed00fa41808342002138f9"
     },
-    "hopkins": {
-      "Package": "hopkins",
-      "Version": "1.1",
-      "Source": "Repository",
-      "Repository": "RSPM",
-      "Requirements": [
-        "RANN",
-        "donut",
-        "pdist"
-      ],
-      "Hash": "a555deca28ef93091dab12aa7f80efe9"
-    },
     "htmltools": {
       "Package": "htmltools",
       "Version": "0.5.5",
