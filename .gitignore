@@ -8,4 +8,4 @@ RMarkDown/*/*.docx
 RMarkDown/*/*.tex
 !RMarkDown/week1/*.pdf
 !RMarkDown/week1/*.Rmd
-!RMarkDOWN/week1/*.html
+RMarkDown/*/*.html
