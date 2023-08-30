@@ -25,17 +25,6 @@ library(rgl)
 ```
 
 
-```{r }
-x <- sort(rnorm(1000))
-y <- rnorm(1000)
-z <- rnorm(1000) + atan2(x, y)
-
-# Plot the 3D plot
-plot3d(x, y, z, col = rainbow(1000))
-rglwidget()
-```
-
-
 ```{r}
 # Include the script from the R directory
 project_path <- here()
@@ -45,21 +34,14 @@ source(here("R","distance_functions.R"))
 
 
 
-
-
 ```{r}
-euclidean_dist <- function(point1, point2) {
-  squared_diff <- (point1 - point2)^2
-  sqrt(sum(squared_diff))
-}
-
 x <- y <- seq(-1, 1, length = 20)
 grid <- expand.grid(x = x, y = y)  # Create a grid of points
 z <- matrix(0, nrow = length(x), ncol = length(y))  # Initialize the z matrix
 
 for (i in 1:length(x)) {
   for (j in 1:length(y)) {
-    z[i, j] <- euclidean_dist(c(x[i], y[j]), c(0, 0))
+    z[i, j] <- euclidean_distance(c(x[i], y[j]), c(0, 0))
   }
 }
 persp(x, y, z,
@@ -71,20 +53,6 @@ persp(x, y, z,
 
 
 ```{r}
-euclidean_dist <- function(point1, point2) {
-  squared_diff <- (point1 - point2)^2
-  sqrt(sum(squared_diff))
-}
-
-manhattan_distance <- function(point1, point2) {
-  if (length(point1) != length(point2)) {
-    stop("Both points should have the same number of dimensions.")
-  }
-
-  abs_diff <- abs(point1 - point2)
-  distance <- sum(abs_diff)
-  return(distance)
-}
 
 x <- y <- seq(-1, 1, length = 20)
 grid <- expand.grid(x = x, y = y)  # Create a grid of points
@@ -93,7 +61,7 @@ z_manhattan <- matrix(0, nrow = length(x), ncol = length(y))   # Initialize the 
 
 for (i in 1:length(x)) {
   for (j in 1:length(y)) {
-    z_euclidean[i, j] <- euclidean_dist(c(x[i], y[j]), c(0, 0))
+    z_euclidean[i, j] <- euclidean_distance(c(x[i], y[j]), c(0, 0))
     z_manhattan[i, j] <- manhattan_distance(c(x[i], y[j]), c(0, 0))
   }
 }
@@ -122,21 +90,6 @@ par(mfrow = c(1, 1))
 
 
 ```{r}
-euclidean_dist <- function(point1, point2) {
-  squared_diff <- (point1 - point2)^2
-  sqrt(sum(squared_diff))
-}
-
-manhattan_distance <- function(point1, point2) {
-  if (length(point1) != length(point2)) {
-    stop("Both points should have the same number of dimensions.")
-  }
-
-  abs_diff <- abs(point1 - point2)
-  distance <- sum(abs_diff)
-  return(distance)
-}
-
 x <- y <- seq(-5, 5, length = 20)
 grid <- expand.grid(x = x, y = y)  # Create a grid of points
 
@@ -145,7 +98,7 @@ z_manhattan <- matrix(0, nrow = length(x), ncol = length(y))   # Initialize the 
 
 for (i in 1:length(x)) {
   for (j in 1:length(y)) {
-    z_euclidean[i, j] <- euclidean_dist(c(x[i], y[j]), c(0, 0))
+    z_euclidean[i, j] <- euclidean_distance(c(x[i], y[j]), c(0, 0))
     z_manhattan[i, j] <- manhattan_distance(c(x[i], y[j]), c(0, 0))
   }
 }
@@ -195,11 +148,11 @@ scatter3d(x = sep.l, y = pet.l, z = sep.w, groups = iris$Species,
           surface = FALSE, ellipsoid = TRUE)
 
  
-widget <- rglwidget()
-
-# Explicitly set the elementId property
-widget$elementId <- "my-rgl-plot"
-widget
+# widget <- rglwidget()
+# 
+# # Explicitly set the elementId property
+# widget$elementId <- "my-rgl-plot"
+# widget
 #
 ```
 
@@ -238,14 +191,12 @@ z <- outer(x, y, cone)
 # plot the 3D surface
 # Adding Titles and Labeling Axes to Plot
 persp3d(x, y, z,col = "orange")
-             
-# add animation
-
-# add animation
+# add animaton
 play3d(spin3d(axis = c(0, 0, 1)), duration = 10)
-# Display the interactive plot using rglwidget()
-rglwidget()
-rgl::setupKnitr(autoprint =FALSE)
+
+# Un comment the code below if you want to see the interactve plot. 
+# rglwidget()
+# rgl::setupKnitr(autoprint =FALSE)
 ```
 
 
@@ -253,20 +204,6 @@ rgl::setupKnitr(autoprint =FALSE)
 
 ```{r}
 library(rgl)
-euclidean_dist <- function(point1, point2) {
-  squared_diff <- (point1 - point2)^2
-  sqrt(sum(squared_diff))
-}
-
-manhattan_distance <- function(point1, point2) {
-  if (length(point1) != length(point2)) {
-    stop("Both points should have the same number of dimensions.")
-  }
-
-  abs_diff <- abs(point1 - point2)
-  distance <- sum(abs_diff)
-  return(distance)
-}
 
 x <- y <- seq(-5, 5, length = 20)
 grid <- expand.grid(x = x, y = y)  # Create a grid of points
@@ -276,7 +213,7 @@ z_manhattan <- matrix(0, nrow = length(x), ncol = length(y))   # Initialize the 
 
 for (i in 1:length(x)) {
   for (j in 1:length(y)) {
-    z_euclidean[i, j] <- euclidean_dist(c(x[i], y[j]), c(0, 0))
+    z_euclidean[i, j] <- euclidean_distance(c(x[i], y[j]), c(0, 0))
     z_manhattan[i, j] <- manhattan_distance(c(x[i], y[j]), c(0, 0))
   }
 }
@@ -296,8 +233,8 @@ persp3d(x, y, combined_distances,
       col = color_palette, shade = 0.5)
 
 # Reset the layout
-layout(1)
-rglwidget()
+# layout(1)
+# rglwidget()
 
 ```
 

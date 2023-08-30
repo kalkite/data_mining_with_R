@@ -6,14 +6,17 @@ output:
   pdf_document:
     latex_engine: xelatex
     keep_tex: yes
-  html_document: default
-  word_document: default
+    number_sections: true
+  html_document:
+    toc: true
+    toc_depth: 3
 header-includes:
+  - \usepackage{algpseudocode}
   - \usepackage[linesnumbered,ruled,lined,boxed]{algorithm2e}
   - \usepackage{amsmath}
   - \usepackage{amsfonts}
   - \usepackage{placeins}
-  - \usepackage{float} # For math fonts like \mathbb
+  - \usepackage{float}
 ---
 
 ```{r setup, include=FALSE}
@@ -35,14 +38,6 @@ source(here("R","utils.R"))
 source(here("R","distance_functions.R"))
 ```
 
-```{r}
-data(iris)
-iris_data <- iris[, 1:4]  # Selecting the first 4 columns (features)
-# Calculate the Hopkins statistic using the hopkins_stat function
-?hopkins_stat
-hopkins_value <- hopkins_stat(iris_data)
-print(hopkins_value)
-```
 
 # Clustering
 
@@ -50,6 +45,25 @@ Given a clustering \(C = \{C_1, C_2, \ldots, C_k\}\), we need some scoring funct
 \[ W(C) = \frac{1}{2} \sum_{k=1}^{K} \sum_{i: C(i)=k} \|x_i - \bar{x}_k\|^2 \]
 The goal is to find the clustering that minimizes:
 \[ C^* = \arg \min_C \{ W(c) \} \]
+
+## Classification of clustering techniques
+Most common clustering techniques may be classified as follows:
+
+- **Representative Based Techniques**
+    - k-means, k-medians, k-medoids, etc. Each cluster has a representative which is either the
+    element of the data set or an element from the same space as all other elements of the dataset.
+    Shape of the clusters is affected by the choice of
+    distance function. Number of clusters is usually a hyperparameter.
+
+- **Hierarchical Clustering Techniques**
+    - Agglomerative and Divisive techniques. Not always relies on the distance function. Different levels of clustering granularity provide different provide different application specific insides.
+
+- **Grid and Density Based Techniques**
+    - Relies on the local density of the data points. Well suited for the clusters of irregular shapes.
+
+- **Probabilistic Algorithms**
+    - Examples: EM (Expectation-Maximization) and EM-like algorithms.  Utilize probabilistic models for clustering
+
 K-means employs a greedy iterative approach to find a clustering that minimizes loss function. 
 \begin{algorithm}
 \LinesNumbered % Add line numbers to the algorithm
