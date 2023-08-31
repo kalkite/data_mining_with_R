@@ -152,7 +152,7 @@ canberra_distance <- function(point1, point2) {
 
 
 
-# ************************ # Chebshev distance # ********************************
+# ************************ # Cosine distnace # ********************************
 #' Cosine Distance
 #'
 #' Calculate the cosine distance between two vectors.
