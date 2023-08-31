@@ -6,13 +6,18 @@ output:
   pdf_document:
     latex_engine: xelatex
     keep_tex: yes
-  html_document: default
-  word_document: default
+    number_sections: true
+  html_document:
+    toc: true
+    toc_depth: 3
 header-includes:
+  - \usepackage{algpseudocode}
   - \usepackage[linesnumbered,ruled,lined,boxed]{algorithm2e}
-  - \usepackage{amsmath}  # For math symbols like \mathbb
+  - \usepackage{amsmath}
   - \usepackage{amsfonts}
-  - \usepackage{placeins} # For math fonts like \mathbb
+  - \usepackage{placeins}
+  - \usepackage{float}
+  - \usepackage{xcolor}
 ---
 
 ```{r setup, include=FALSE}
@@ -32,7 +37,53 @@ source(here("R", "utils.R"))
 source(here("R","distance_functions.R"))
 ```
 
+# Distance Functions
 
+- **Euclidean distance:**
+   
+   \( S(x, y) = \sqrt{\sum_{i=1}^{n} (x_i - y_i)^2} \)
+   
+- **Manhattan distance :**
+   
+   \( S(x,y) = \sum_{i=1}^{n} |x_i - y_i| \)
+   
+- **Chebyshev distance:**
+   
+   \( S(x,y) = max_i(|x_i - y_i|) \)
+
+- **Mahalanobis Distance:**
+
+   \(S(x,y) = \sqrt{\sum_{i=1}^{n} (x-y)^T C^{-1}(x-y)} \)
+   
+- **Canberra Distance:**
+
+   \(S(x,y) = \sum\limits_{i=1}^{n} \frac{|x_i - y_i|}{|x_i| + |y_i|} \)
+   
+- **Cosine Distance:**
+
+   \(S(x,y) =  \frac{x \cdot y}{\|x\| \|y\| } \)
+
+
+```{r}
+set.seed(123)  
+n <-  100 
+a <- runif(n)  # Generate random vector a
+b <- runif(n)
+euclidean_dist <- euclidean_distance(a,b)
+manhattan_dist <- manhattan_distance(a,b)
+chebyshev_dist <-chebyshev_distance(a,b)
+mahalanobis_dist <- mahalanobis_distance(a,b)
+canberra_dist  <- canberra_distance(a,b)
+cosine_dist <- cosine_distance(a,b)
+
+print(paste("Euclidean distance:", euclidean_dist))
+print(paste("Manhattan distance:", manhattan_dist))
+print(paste("Chebyshev distance:", chebyshev_dist))
+print(paste("Mahalanobis distance:", mahalanobis_dist))
+print(paste("Canberra distance:", canberra_dist))
+print(paste("Cosine distance:", cosine_dist))
+```
+## Impact of the rotation of underlying data set 
 
 ```{r}
 x <- y <- seq(-1, 1, length = 20)
@@ -119,8 +170,6 @@ persp(x, y, combined_distances,
 
 # Reset the layout
 layout(1)
-
-
 ```
 
 ```{r}
@@ -198,7 +247,6 @@ play3d(spin3d(axis = c(0, 0, 1)), duration = 10)
 # rglwidget()
 # rgl::setupKnitr(autoprint =FALSE)
 ```
-
 
 
 

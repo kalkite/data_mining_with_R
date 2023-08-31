@@ -31,6 +31,9 @@ library(here)
     + [devtools](https://www.r-project.org/nosvn/pandoc/devtools.html) 
     + [tidyverse](https://www.tidyverse.org/packages/)
     + here
+    + devtools::install_github("jeffwong/pdist")
+    + donut
+    + rnn
 
 ```{r}
 library(here)
@@ -38,8 +41,6 @@ project_path <- here()
 source(here("R","utils.R"))
 source(here("R","distance_functions.R"))
 ```
-
-
 
 
 # Clustering
@@ -133,7 +134,7 @@ K-means employs a greedy iterative approach to find a clustering that minimizes 
 
 ```{r}
 
-
+print("hello world")
 
 ```
 
