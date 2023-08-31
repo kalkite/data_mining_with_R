@@ -97,6 +97,9 @@ hopkins_result <- hopkins_stat(iris[, 1:4])
 cat("Hopkins Statistic for the Iris dataset:", hopkins_result, "\n")
 ```
 
+## Representative Based Techniques algorithms 
+
+### K-means
 
 K-means employs a greedy iterative approach to find a clustering that minimizes loss function. 
 \begin{algorithm}
@@ -131,10 +134,7 @@ K-means employs a greedy iterative approach to find a clustering that minimizes 
 \end{algorithm}
 
 
-
 ```{r}
-
-print("hello world")
 
 ```
 
