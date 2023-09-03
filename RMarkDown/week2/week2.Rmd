@@ -133,7 +133,6 @@ K-means employs a greedy iterative approach to find a clustering that minimizes 
 }
 \end{algorithm}
 
-
 ```{r}
 
 ```
