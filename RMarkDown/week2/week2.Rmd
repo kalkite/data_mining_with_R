@@ -40,6 +40,7 @@ library(here)
 project_path <- here()
 source(here("R","utils.R"))
 source(here("R","distance_functions.R"))
+fraud_data_file = here("data","PS_20174392719_1491204439457_log.csv")
 ```
 
 
@@ -133,7 +134,111 @@ K-means employs a greedy iterative approach to find a clustering that minimizes 
 }
 \end{algorithm}
 
-```{r}
+# Dataset
 
+This dataset is a synthetic dataset generated using the simulator called PaySim. The dataset contains financial transactions with fraud observations. For more details, you can check [here](https://www.kaggle.com/datasets/ealaxi/paysim1).
+
+```{r}
+fraud = read.csv(fraud_data_file)
+str(fraud)
 ```
+
+```{r}
+library(readr)
+library(tidyverse)
+library(ggplot2)
+dims <- dim(fraud)
+print(paste("dimensions:", paste(dims, collapse = "x")))
+```
+The data consist of more than 2263777 million observations and 11 variables. Since the data is large, cleaning the dataset beforehand is a prerequisite for efficiency as the computer will have to deal with a large amount of data.
+
+The first thing we need to remove the variables that do not contribute to the investigation. The variable of nameOrig and nameDest consist of a vast amount of unique values. We create a new object to differentiate from the uncleaned dataset and drop these two variables as our first step.
+
+```{r}
+fraud_clean <- fraud %>%  select(-c(nameOrig, nameDest))
+head(fraud_clean,10)
+```
+
+the second step is we convert the variable that is not suitable for the analysis. The variables of type are under character type. This variable is important for the identification of the type of transaction. We will convert this one into a factor type.
+
+
+```{r}
+fraud_clean <- fraud_clean %>% 
+  mutate(type = as.factor(type),
+         isFraud = as.factor(isFraud))
+```
+
+
+## Data Exploration
+
+```{r}
+transaction <- c("fraud","genuine")
+value <- c(sum(fraud_clean$isFraud == 1), sum(fraud_clean$isFraud == 0))
+percentage <- c(sum(fraud_clean$isFraud == 1)/length(fraud_clean$isFraud)*100,
+                sum(fraud_clean$isFraud == 0)/length(fraud_clean$isFraud)*100)
+information <- data.frame(transaction,value,percentage)
+information
+```
+The fraud transaction is tiny compared to the genuine transaction. It only contains less than 1% of the overall data. We try to visualize the whole transactions based on the transaction type.
+
+```{r}
+total_fraud <- fraud_clean %>% 
+  filter(isFraud == 1) %>% 
+  select(type) %>% 
+  group_by(type) %>% 
+  count(type) %>% 
+  arrange(desc(n))
+total_fraud
+```
+```{r}
+fraud_clean_real <- fraud_clean %>% 
+  filter(type == "CASH_OUT" | type == "TRANSFER")
+```
+
+```{r}
+RNGkind(sample.kind = "Rounding")
+set.seed(11)
+library(rsample)
+fraud_split <- initial_split(data = fraud_clean_real, prop = 0.7, strata = isFraud)
+fraud_train <- training(fraud_split)
+fraud_test <- testing(fraud_split)
+```
+
+```{r}
+fraud_scale_train <- fraud_train %>% select(-c(isFraud, isFlaggedFraud, type))
+fraud_scale_train <- as.data.frame(scale(fraud_scale_train))
+
+fraud_scale_test <- fraud_test %>% select(-c(isFraud, isFlaggedFraud, type))
+fraud_scale_test <- as.data.frame(scale(fraud_scale_test))
+```
+
+
+
+```{r}
+# Create a data frame with the provided data
+```
+
+
+
+```{r}
+library(dbscan)
+```
+
+
+```{r}
+test_samples = head(fraud_scale_test,100)
+fraud_lof1 <- lof(test_samples, k = 3)
+```
+
+
+```{r}
+source(here("R", "loc_out_fact.R"))
+```
+
+```{r}
+lof_2 = local_outlier_factor(test_samples,3)
+```
+
+
+
 
