@@ -194,7 +194,7 @@ $$
 $$
 
 M represents one-sided distance of the decision boundry to the margin[2].
-As this distance can be represented as second norm B^-1, instead of maximizing 
+As this distance can be represented as second norm $B^-1$, instead of maximizing 
 the margin M (like in the previous formulation) we can rop our condition on 2nd 
 beta norm squared equal to one, and replacing M with it.
 $$
@@ -202,9 +202,9 @@ M = 1/\|\beta \|
 $$
 
 Epsilon represents the relative distance to our decision boundary, where
-1>=e_i>=0 implies observation i has been correctly classified but lies inside
-the margin M, whereas e_i>= implies our observation has been miss classified.
-By putting an upper bound on the sum of e_i's let's say K, we limit the amount
+$1>=e_i>=0$ implies observation i has been correctly classified but lies inside
+the margin M, whereas $e_i>=$ implies our observation has been miss classified.
+By putting an upper bound on the sum of $e_i$'s let's say K, we limit the amount
 of possible missclasifications.
 
 $$
@@ -267,7 +267,7 @@ programming, but such algorithms are very time consuming[5].
 
 Instead we will be applying a gradient descent algorithm. This algorithm uses
 a simple trick that the gradient of our optimization problem will, at a given
-point x_i, point in the direction of steepest ascent. Conversely, taking a step
+point $x_i$, point in the direction of steepest ascent. Conversely, taking a step
 in the opposite direction will lead us towards the minimum. In the simplest
 form, the gradient works in the following way. 
 
@@ -335,10 +335,13 @@ svm_gradient_descent <- function (
     #B <- coeffiient matrix
     #t <- number of interations
     #nn <- learning rate
-    #H <- vector of h hinge loss value for each iteration
+    #H <- vector of h hinge loss 
+  #value for each iteration
     #G <- gradient
-    #b <- whether to include bias term (also called constant)
-    #V <- vector of saved values y or 0 for max(0,1-Yi(BXi)
+    #b <- whether to include bias
+  #term (also called constant)
+    #V <- vector of saved v
+  #alues y or 0 for max(0,1-Yi(BXi)
     #S <- Sample size for SGD
     #XS, YS <- Sample of XS,YS of size S
     
@@ -348,7 +351,8 @@ svm_gradient_descent <- function (
       x <- cbind(Dummy1,x)
     }
     
-    #Changes TRUE / FALSE to -1 and 1 and turns y into a data type matrix
+    #Changes TRUE / FALSE to -1 and 1 
+  #and turns y into a data type matrix
     Y <- data.matrix(ifelse(y == TRUE,1,-1))
     
     #Makes sure x is of data type matrix
@@ -359,7 +363,8 @@ svm_gradient_descent <- function (
     G <- matrix(0,ncol(x),1)
     
     for (i in 1:t) {
-      #Sets previous gradient to be current gradient
+      #Sets previous 
+      #gradient to be current gradient
       Gp <- G
       
       #Sampling without replacement
@@ -369,10 +374,12 @@ svm_gradient_descent <- function (
       V <- matrix(0,nrow(YS),1)
       
       #Part(1)
-      #max(0,1-yi(xiB)) part of the algorithm, saving output in V
+      #max(0,1-yi(xiB)) part of the algorithm, 
+      #saving output in V
       for (n in c(1:nrow(XS))) {
         #Main part of the max(0,1-yi(Bxi) equation
-        V[n] <- ifelse((1 - (XS[n,] %*% B)*YS[n])>0,YS[n],0)
+        V[n] <- ifelse((1 - (XS[n,] %*% B)*YS[n])>0,
+                       YS[n],0)
       }
       
       #Part(2)
@@ -394,18 +401,19 @@ svm_gradient_descent <- function (
       
       #Part(4)
       #Checks whether the value of B is NaN 
-      # and prevents further iterations if TRUE
+      # and prevents further iterations 
+      #if TRUE
       if (is.na(nn)) {
         warning(c("Terminated after ",
                   i," iterations"))
         predicted <- ifelse(X%*%Bp<0,-1,1)
-        error_rate <- sum(ifelse(predicted ==Y,
-                                 0,1))/nrow(Y)
+        error_rate <- sum(ifelse(
+          predicted ==Y,0,1))/nrow(Y)
         M <- 1/(sqrt(t(Bp)%*%Bp))
         
         svm_output <- list(coef = Bp, 
-                        error_rate = error_rate,
-                        margin = M)
+                  error_rate = error_rate,
+                  margin = M)
         class(svm_output) <- "svm_sgd_bb"
         return(svm_output)
       }
@@ -419,7 +427,8 @@ svm_gradient_descent <- function (
       B <- B-nn*G
     }
     predicted <- ifelse(X%*%B<0,-1,1)
-    error_rate <- sum(ifelse(predicted ==Y,0,1))/nrow(Y)
+    error_rate <- sum(ifelse(
+      predicted ==Y,0,1))/nrow(Y)
     M <- 1/(sqrt(t(B)%*%B))
     
     svm_output <- list(coef = B, 
@@ -578,8 +587,6 @@ abline(-Test4$margin-(Test4$coef[1]/Test4$coef[3]),
 
 Now, test our algorithm on the Heart Disease dataset to predict the presence or absence of heart disease based on various features. We have split the dataset into training and testing sets using a 70-30 ratio, where 70% of the data is used for training the algorithm, and 30% is kept aside for testing its performance.
 
-
-
 ```{r}
 splitIndex <- createDataPartition(
   heart_data$HeartDisease, p = 0.7, 
@@ -678,8 +685,7 @@ Now let us check how our models perform on test data:
 ```{r}
 source(here("R","confusion_matrix_.R"))
 confusion_matrix_results = ConfusionMatrix(
-  s.character(Ytest),as.character(SVM_predicted1))
-confusion_matrix_results
+  as.character(Ytest),as.character(SVM_predicted2))
 ```
 
 ```{r xtable.floating, results='asis'}
@@ -700,4 +706,115 @@ print(xtable(
 
 
 ## Non linear SVM SHOW CASE: 
+SVM model with a non-linear kernel (such as a radial basis function, or RBF kernel) on the iris dataset in R, and then plot the accuracy against different values of the kernel parameter (k):
+
+```{r}
+# Load required libraries
+library(e1071)
+library(ggplot2)
+
+# Load iris dataset
+data(iris)
+
+# Split the dataset into features (X) and labels (Y)
+X <- iris[, 1:4]
+Y <- iris[, 5]
+# Set the seed for reproducibility
+set.seed(123)
+
+# Split the data into training 
+# and testing sets (70% training, 30% testing)
+sample_index <- sample(1:nrow(iris),
+                       0.7 * nrow(iris))
+X_train <- iris[sample_index, 1:4]
+Y_train <- iris[sample_index, 5]
+X_test <- iris[-sample_index, 1:4]
+Y_test <- iris[-sample_index, 5]
+```
+
+Here, I have used r CRAN pacakge e1071 to train the SVM. 
+
+```{r}
+svm_model <- svm(Species ~ ., 
+                 data = iris[sample_index, ],
+                 kernel = "radial")
+
+# Make predictions on 
+# the test set
+predictions <- predict(svm_model, 
+                       newdata = X_test)
+
+```
+
+# Cross validataion 
+
+## k-fold Cross-validatation. 
+K-fold cross-validation is a resampling technique used to assess the performance of a machine learning model. It divides the dataset into 'k' subsets or folds. The model is trained on 'k-1' folds and tested on the remaining fold. This process is repeated 'k' times, and each fold is used exactly once as the validation data.
+
+### Steps of K-Fold Cross-Validation:
+
+1. **Divide the Data:** Split the dataset into 'k' subsets of approximately equal size, often stratified by the target variable for balanced representation in each fold.
+
+2. **Training and Testing:** Train the model 'k' times, using 'k-1' folds as the training data and the remaining fold as the test set. Evaluate the model's performance on the test set.
+
+3. **Evaluation:** Calculate performance metrics such as accuracy, precision, recall, or F1-score for each iteration. Average these metrics to obtain an overall performance estimate of the model.
+```{r}
+data <- iris
+k <- 20
+data$id <- sample(1:k, nrow(data), replace = TRUE)
+accuracies <- numeric(k)
+
+# Function for k-fold cross-validation
+for (i in 1:k) {
+  trainset <- subset(data, 
+                     id %in% unique(data$id)[-i])
+  testset <- subset(data,
+                    id %in% c(i))
+  svm_model <- svm(Species ~ ., 
+                   data = trainset, kernel = "radial")
+  predictions <- predict(svm_model,
+                         testset)
+  accuracy <- sum(
+    predictions == testset$Species) / nrow(testset)
+  accuracies[i] <- accuracy
+}
+
+# Plot the graph of k-values with accuracies
+plot(1:k, accuracies, type = "b", 
+     xlab = "k-values", 
+     ylab = "Accuracy", 
+     main = "SVM Model Accuracy vs.
+     k-values (RBF Kernel)")
+
+```
+the kernel has been changed to "poly" in the below code.  indicating a polynomial kernel. The degree = 2 parameter specifies the degree of the polynomial kernel. you can increase degrees if you want to. 
+```{r}
+data <- iris
+k <- 20
+data$id <- sample(1:k, nrow(data), replace = TRUE)
+accuracies <- numeric(k)
+
+# Function for k-fold cross-validation
+for (i in 1:k) {
+  trainset <- subset(data, 
+                     id %in% unique(data$id)[-i])
+  testset <- subset(data,
+                    id %in% c(i))
+  svm_model <- svm(Species ~ ., 
+                   data = trainset, 
+                   kernel = "poly", degree = 2)
+  predictions <- predict(svm_model,
+                         testset)
+  accuracy <- sum(
+    predictions == testset$Species) / nrow(testset)
+  accuracies[i] <- accuracy
+}
+
+# Plot the graph of k-values with accuracies
+plot(1:k, accuracies, type = "b", 
+     xlab = "k-values", 
+     ylab = "Accuracy", 
+     main = "SVM Model Accuracy vs. k-values (Polynomial Kernel)")
+
+```
 
