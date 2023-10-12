@@ -533,7 +533,7 @@ actual_labels = test_data$Species
 ### Classification Evaluation
 
 Naive Bayes Classification Results. 
-```{r }
+# ```{r }
 
 library(here)
 source(here("RMarkDown/week5",
