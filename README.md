@@ -1,6 +1,6 @@
 # Data Mining with R
 
-This repository contains R code and functions for data mining and distance calculation.
+This repository contains R code and functions for data mining.
 
 ## Project Structure
 
