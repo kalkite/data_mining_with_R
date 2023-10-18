@@ -1,0 +1,115 @@
+---
+# -------------- Paper stuff. fill me out. ---------------- #
+title: Data Mining- Practice 7  Data preparation and linear regression
+date: "`r format(Sys.time(), format='%Y-%m-%d %H:%M:%S %z')`" # doesn't get shown in 
+author:
+    - name: Rajesh Kalakoti
+      affiliation: 4
+    - name: ', Sven Nomm'
+      affiliation: 1
+affiliation:
+    - key: 1
+      name:
+        - Taltech, Estonia, 12616
+    - key: 4
+      name:
+        - 'Email: rajesh.kalakoti@outlook.com'
+abstract: |
+In today's practical session, we will delve into the core concepts of data mining. The session is structured to provide a comprehensive understanding of essential techniques in data preprocessing, dimensionality reduction, and predictive modeling.
+
+
+  
+# This will be placed into \bibliography{}
+bibliography:  'IEEEabrv,./library'
+  
+# ----------- RMarkdown config ---------
+# You can change `in_header` e.g.
+output:
+  pdf_document:
+    template: "~/Documents/data_mining_with_R/RMarkDown/lib/ieee-pandoc-template.tex"
+    #template: "lib/ieee-template.tex"
+    includes:
+      in_header:
+      - ~/Documents/data_mining_with_R/RMarkDown/preamble.tex
+    keep_tex: yes # if you wish to keep the intermediate tex file
+    fig_caption: yes # show figure captions
+    pandoc_args: # Add to it if you want, but leave pandoc-crossref and --natbib
+    - --filter
+    - pandoc-crossref
+    - --natbib
+# --------- Template config. can generally be left as-is ---------
+classoption: conference # eg draftcls conference
+link-citations: yes # citations have links to bibliography
+reference-section-title: References # title used for biliography
+papersize: a4paper
+# leave these below options as-is unless you know what you're doing.
+natbib: yes
+documentclass: IEEEtran
+# ----------- Pandoc crossref config ---------
+# pandoc-crossref
+eqnPrefix:
+    - ''
+    - ''
+figPrefix:
+  - "figure"
+  - "figures"
+tblPrefix:
+  - "table"
+  - "tables"
+secPrefix:
+  - "section"
+  - "sections"
+autoSectionLabels: true # prepend sec: to section titles
+
+---
+```{r setup, include=F}
+library(pander)
+library(knitr)
+# where the figures will be
+opts_chunk$set(fig.path='figure/')
+# code chunk options: tidy; wrap at 40 characters
+opts_knit$set(tidy=T, tidy.opts=list(width.cutoff=40))
+
+# Some helpful latex-generating functions for when you need more control.
+# Optional.
+ 
+# Helpful for latex lables
+library(xtable)
+options(xtable.caption.placement='top',
+        xtable.table.placement='!t',
+        xtable.include.rownames=F,
+        xtable.comment=F)
+
+#' Outputs LaTeX code for a figure environment with caption and label and placement
+#'
+#' The RMD -> MD conversion drops `fig.pos` and labels when you run knitr so I
+#' need to output LaTeX explicitly.
+#'
+#' Use Hmisc or xtab if you want tables.
+#'
+#' If you want to do subfigures (using subfloat) then provide multiple filenames;
+#'  the first element of the caption is the overall and the rest are individual.
+#' @family pandoc helpers
+#' @export
+# TODO: vectorise label in the same way as width, caption
+# TODO: use \hfil between the \subfloat s for equal spacing (as in bare_conf.tex)
+latex.figure <- function (fname, caption, label, placement='!t', floating=F, width='\\columnwidth', subfloat=length(fname) > 1, linebreaks.after=NULL) {
+    if (subfloat && length(caption) == length(fname))
+        caption <- c('', caption)
+    else if (length(caption) > 1 && length(caption) != length(fname) && length(caption) != length(fname) + 1)
+        stop("Length of filenames doesn't match length of captions (+1 if subfloat)")
+    cat(sprintf('\\begin{figure%s}[%s]%%\n\\centering%%\n',
+                ifelse(floating, '*', ''), placement))
+    figs <- sprintf('\\includegraphics[width=%s]{%s}', width, fname)
+    if (subfloat)
+        figs <- sprintf('\\subfloat[%s]{%s}', caption[2:(length(fname) + 1)], figs)
+    if (!is.null(linebreaks.after)) {
+        figs[linebreaks.after] <- paste0(figs[linebreaks.after], '\\\\')
+    }
+    figs <- paste0(figs, '%')
+    cat(figs, sep='\n')
+    # TODO should omit \caption{} if not provided for subfloat (also for normal pics)
+    cat(sprintf('\\caption{%s}%%\n\\label{%s}%%\n\\end{figure%s}\n',
+        caption[1], label, ifelse(floating, '*', '')))
+}
+```
