@@ -25,11 +25,11 @@ bibliography:  'IEEEabrv,./library'
 # You can change `in_header` e.g.
 output:
   pdf_document:
-    template: "lib/ieee-pandoc-template.tex"
+    template: "~/Documents/data_mining_with_R/RMarkDown/lib/ieee-pandoc-template.tex"
     #template: "lib/ieee-template.tex"
     includes:
       in_header:
-      - ./preamble.tex
+      - ~/Documents/data_mining_with_R/RMarkDown/preamble.tex
     keep_tex: yes # if you wish to keep the intermediate tex file
     fig_caption: yes # show figure captions
     pandoc_args: # Add to it if you want, but leave pandoc-crossref and --natbib
