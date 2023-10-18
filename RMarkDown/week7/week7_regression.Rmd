@@ -113,3 +113,6 @@ latex.figure <- function (fname, caption, label, placement='!t', floating=F, wid
         caption[1], label, ifelse(floating, '*', '')))
 }
 ```
+
+
+# Introduction
