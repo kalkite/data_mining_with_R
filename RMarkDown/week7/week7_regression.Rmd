@@ -1,5 +1,5 @@
 ---
-title: "Data Mining- Practice 7 Dimensionality Reduction and PCA"
+title: "Data Mining- Practice 7 Dimensionality Reduction and Linear Regression"
 author:
 - name: Rajesh Kalakoti
   affiliation: 4
