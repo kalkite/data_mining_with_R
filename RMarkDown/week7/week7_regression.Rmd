@@ -262,40 +262,48 @@ A = \left\{ a_i \, \middle| \, a_i = U_r^T \overline{x}_i, \text{ for } i = 1, \
 Obtain the reduced dimensionality data by multiplying the reduced basis (\(U_r^T\)) with the original data (\(x_i\)) for \(i = 1, \ldots, n\).
 
 ```{r}
-perform_pca <- function(D, alpha, num_components) {
+pca <- function(
+    D, alpha, num_components) {
   # Step 1: Compute the mean
   mu <- colMeans(D)
   
   # Step 2: Center the data
-  D_centered <- D - matrix(mu, nrow(D), ncol(D), byrow = TRUE)
+  D_centered <- D - matrix(mu, nrow(D), 
+                           ncol(D),
+                           byrow = TRUE)
   
-  # Step 3: Compute the covariance matrix
+  # Step 3: Computethe covariance matrix
   cov_matrix <- cov(D_centered)
   
-  # Step 4: Compute eigenvalues and eigenvectors
-  eigen_result <- eigen(cov_matrix)
-  eigenvalues <- eigen_result$values
-  eigenvectors <- eigen_result$vectors
+  # Step 4: Compute eigenvalues
+  # and eigenvectors
+  eig_result <- eigen(cov_matrix)
+  eig_val <- eig_result$values
+  eig_vect <- eig_result$vectors
   
   # Step 5: Compute fraction of total variance
-  total_variance <- sum(eigenvalues)
-  variance_fraction <- cumsum(eigenvalues) / total_variance
-  
-  # Step 6: Choose components based on alpha
-  num_components <- min(which(variance_fraction >= alpha))
+  tot_var <- sum(eig_val)
+  var_frac <- cumsum(eig_val)/tot_var
+
+  # Step 6: Choose components 
+  # based on alpha
+  num_components <- min(which(var_frac
+                              >= alpha))
   
   # Step 7: Reduce eigenvectors
-  reduced_basis <- eigenvectors[, 1:num_components]
+  red_basis <- eig_vect[, 1:num_components]
   
   # Step 8: Transform data
-  reduced_data <- as.matrix(D_centered) %*% reduced_basis
+  red_data <- as.matrix(D_centered) %*% red_basis
   
-  return(reduced_data)
+  return(red_data)
 }
 
 
 
-# Test PCA on iris dataset, reducing from 4 features to 2 features with alpha=0.95
+# Test PCA on iris dataset, 
+#reducing from 4 features to 2 
+#features with alpha=0.95
 library(datasets)
 
 # Load iris dataset
@@ -304,12 +312,221 @@ data(iris)
 # Extract features from iris dataset
 features <- iris[, 1:4]
 
-# Perform PCA with alpha=0.95 and 2 components
-reduced_data <- perform_pca(features, alpha = 0.95, num_components = 2)
+# Perform PCA with alpha=0.95 
+#and 2 components
+reduced_data <- pca(
+  features, alpha = 0.95, 
+  num_components = 2)
 
-# Plot PCA results with customized axis labels
-plot(reduced_data, col = iris$Species, pch = 16, main = "PCA of Iris Dataset", xlab = "Dim 1", ylab = "Dim 2")
-legend("topright", legend = levels(iris$Species), col = 1:3, pch = 16)
+# Plot PCA results with 
+# customized axis labels
+plot(reduced_data, col = iris$Species, 
+     pch = 16, 
+     main = "PCA of Iris Dataset",
+     xlab = "Dim 1", ylab = "Dim 2")
+legend("topright",
+       legend = levels(iris$Species),
+       col = 1:3,
+       pch = 16)
 
 ```
 
+
+# Linear Regression
+
+Given a set of attributes or variables \(X_1\), \(X_2\), ..., \(X_d\), called the predictor, explanatory, or independent variables, and given a real-valued attribute of interest \(Y\), called the response or dependent variable, the aim of regression is to predict the response variable based on the independent variables. That is, the goal is to learn a regression function \(f\), such that
+
+\[ Y = f(X_1, X_2, ..., X_d) + \epsilon = f(X) + \epsilon \]
+
+where \(X = (X_1, X_2, ..., X_d)^T\) is the multivariate random variable comprising the predictor attributes, and \(\epsilon\) is a random error term that is assumed to be independent of \(X\). In other words, \(Y\) is comprised of two components, one dependent on the observed predictor attributes, and the other, coming from the error term, independent of the predictor attributes. The error term encapsulates inherent uncertainty in \(Y\), as well as, possibly the effect of unobserved, hidden or latent variables.
+
+
+##  LINEAR REGRESSION MODEL
+
+In linear regression, the function \( f \) is assumed to be linear in its parameters. It can be represented as:
+
+$$ 
+f(X) = \beta + \omega_1 X_1 + \omega_2 X_2 + \ldots + \omega_d X_d = \beta + \sum_{i=1}^{d} \omega_i X_i = \beta + \omega^T X 
+$$
+Here, the parameter \( \beta \) is the true (unknown) bias term, the parameter \( \omega_i \) is the true (unknown) regression coefficient or weight for attribute \( X_i \), and \( \omega = (\omega_1, \omega_2, \ldots, \omega_d)^T \) is the true d-dimensional weight vector.
+
+
+###  BIVARIATE REGRESSION
+
+Let us first consider the case where the input data \( D \) comprises a single predictor attribute, \( X = (x_1, x_2, \ldots, x_n)^T \), along with the response variable, \( Y = (y_1, y_2, \ldots, y_n)^T \). Since \( f \) is linear, we have:
+
+$$
+\hat{y}_i = f(x_i) = b + w \cdot x_i
+$$
+
+
+Thus, we seek the straight line \( f(x) \) with slope \( w \) and intercept \( b \) that best fits the data. The residual error, which is the difference between the predicted value (also called the fitted value) and the observed value of the response variable, is given as:
+
+$$ 
+\epsilon_i = y_i - \hat{y}_i 
+$$
+
+Note that \( |\epsilon| \) denotes the vertical distance between the fitted and observed response. The best-fitting line minimizes the sum of squared errors.
+
+$$ 
+\text{min}_{b, w} \text{SSE} = \sum_{i=1}^{n} \epsilon_i^2 = \sum_{i=1}^{n} (y_i - \hat{y}_i)^2 = \sum_{i=1}^{n} (y_i - b - w \cdot x_i)^2 
+$$
+
+To solve this objective, we differentiate it with respect to \( b \) and set the result to 0 to obtain:
+
+$$ 
+\frac{\partial \text{SSE}}{\partial b} = -2 \sum_{i=1}^{n} (y_i - b - w \cdot x_i) = 0 \quad  
+$$
+
+$$ 
+w = \frac{(\sum_{i=1}^{n} x_i \cdot y_i) - n \cdot \mu_X \cdot \mu_Y}{\sum_{i=1}^{n} x_i^2 - n \cdot \mu^2_X} 
+$$
+
+
+The regression coefficient  \( w \) can also be written as
+
+
+$$ w = \frac{\sum_{i=1}^{n} (x_i - \mu_X)(y_i - \mu_Y)}{\sum_{i=1}^{n} (x_i - \mu_X)^2} = \frac{\sigma_{XY}}{\sigma_X^2} = \frac{\text{cov}(X, Y)}{\text{var}(X)} 
+$$
+
+
+where \( \sigma_X^2 \) is the variance of \( X \), and \( \sigma_{XY} \) is the covariance between \( X \) and \( Y \). Noting that the correlation between \( X \) and \( Y \) is given as \( \rho_{XY} = \frac{\sigma_{XY}}{\sigma_X \cdot \sigma_Y} \), we can also express \( w \) as:
+
+$$
+w = \rho_{XY} \cdot \frac{\sigma_Y}{\sigma_X} 
+$$
+
+
+
+### Code For LInear regression
+
+Here I have created sample for regression exmaple, you can check the sample dataset csv file with regression_data in data folder. 
+
+```{r, warning=FALSE}
+library(here)
+data_file = here("data", 
+                 "regression_data.csv");
+data = read.csv(data_file,header=TRUE)
+dim(data)
+
+# random simple using sample()
+row.number <- sample(1:nrow(data),
+                     0.8*nrow(data)) 
+# 800 observation to train the data
+training = data[row.number,]
+ # 200 observation to test the data
+testing = data[-row.number,]
+# dimension of training data,
+#800 rows with 6 variables
+dim(training)    
+dim(testing)  
+# select all X's column for training 
+trainingX <- subset(training, 
+                    select = -c(Y)) 
+# select only Y column for training
+trainingY <- subset(training,
+                    select = c(Y)) 
+ # select all X's column for testing
+testingX <- subset(testing,
+                   select = -c(Y))
+# select only Y column for testing
+testingY <- subset(testing, 
+                   select = c(Y)) 
+```
+
+```{r}
+linearRegression <- function(x,y) 
+  { # create a function of x and y data
+  # vector of 1's with the 
+  #same amount af rows.
+  intercept <- rep(1, nrow(x))
+  # Add intercept column to x
+  x <- cbind(intercept, x)
+  # create x matrix of feature variables
+  matrix_X <- as.matrix(x) 
+  # create y vector of 
+  #  the response variable
+  vector_Y <- as.matrix(y) 
+  betas  <- solve(
+    t(matrix_X) %*% matrix_X) %*% t(
+      matrix_X) %*% vector_Y
+  betas <- round(betas, 2)
+  return(betas) 
+}
+
+PredictY <- function(x, betas) {
+  betas_matrix <- t(as.matrix(betas)) 
+  intercept <- rep(1, nrow(x))   
+  x <- cbind(intercept, x)   
+  matrix_X <- t(as.matrix(x))
+  Ŷ <- betas_matrix %*% matrix_X
+  return(Ŷ)
+} 
+
+```
+Error function 
+
+```{r}
+errors <- function(Y, Ŷ){
+  Y <- as.matrix(Y)
+  Ŷ <- t(as.matrix(Ŷ))
+  # compute the sum squared errors
+  RSS = sum((Y- Ŷ)^2)  
+  # RSS gives a measure of 
+  # error of prediction, 
+  #the lower it is the more our model 
+  #is accurate 
+  # compute the 
+  #total sum of squares
+  TSS = sum((Y - mean(Ŷ))^2)
+  # R2 represents 
+  #the proportion of variance
+  R2 <- 1 - (RSS/TSS) 
+  # Root mean square error 
+  # we will use it to evaluate our model
+  RMSE <- sqrt(mean((Ŷ - Y)^2)) 
+  # return list of R2 and RMSE
+  return(list(R2 = R2, 
+              RMSE = RMSE,
+              RSS = RSS, TSS = TSS)) 
+}
+```
+
+
+```{r}
+betas <- linearRegression(
+  trainingX,trainingY)
+# dimension of betas
+#is 6 values of Y intercept
+dim(betas) 
+print(betas)
+```
+
+```{r}
+# compute Ŷ with PredictY function using 
+Ŷ <- PredictY(testingX,
+              betas)
+dim(Ŷ) 
+error <- errors(testingY, Ŷ)
+error_df <- data.frame(
+  names = names(error), 
+  values = unlist(error))
+```
+```{r, results='asis'}
+print(xtable(
+    error_df,
+    caption='Error values',
+    label='tbl:xtable.floating'),
+    align=c(rep('r', 4), 'l'))
+```
+
+
+we will use lm function which can be used to create a simple linear regression model,  in dataset We have Y column that will depend on 5 columns of X's (X1-x5)
+```{r}
+Rversion <- lm(
+  formula = Y ~ X1 + X2 + X3 + X4 + X5,
+  data =data)
+summary(Rversion)
+```
+
+Overall, both R2 values from the regressionlinear function from scatch and using also built in function with R  are close to 1 which means the two method are very close. however, the value of TSS and RSS are extremly differents but the value of R2 is so close to 0.99
