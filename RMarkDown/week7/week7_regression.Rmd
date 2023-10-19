@@ -1,5 +1,5 @@
 ---
-title: "Data Mining- Practice 6 Classification- Support Vector machines and Kernel
+title: "Data Mining- Practice 7 Dimensionality Reduction and PCA
   Trick"
 author:
 - name: Rajesh Kalakoti
