@@ -18,6 +18,8 @@ output:
     - "pandoc-crossref"
     - "--natbib"
   word_document: default
+  html_document:
+    df_print: paged
 abstract: |
   In today's practical session, we will delve into the core concepts of data mining. The session is structured to provide a comprehensive understanding of essential techniques in data preprocessing, dimensionality reduction, and predictive modeling.
 bibliography: IEEEabrv,./library
@@ -528,5 +530,22 @@ Rversion <- lm(
   data =data)
 summary(Rversion)
 ```
+Assume that the error term   \( \epsilon \)  in the linear regression model is independent of x, and is normally distributed, with zero mean and constant variance. We can decide whether there is any significant relationship between x and y by testing the null hypothesis that w = 0.
+
+###  problem 
+
+Significance Test for Linear Regression
+Assume that the error term \( \epsilon \) in the linear regression model is independent of x, and is normally distributed, with zero mean and constant variance. We can decide whether there is any significant relationship between x and y by testing the null hypothesis that \( \beta \) = 0.
+
+
+Decide whether there is a significant relationship between the variables in the linear regression model of the data set faithful at .05 significance level.
+
+### answer.
+As the p-value is much less than 0.05, we reject the null hypothesis that \( \beta \) = 0.. Hence there is a significant relationship between the variables in the linear regression model of the data set faithful.
+
+
 
 Overall, both R2 values from the regressionlinear function from scatch and using also built in function with R  are close to 1 which means the two method are very close. however, the value of TSS and RSS are extremly differents but the value of R2 is so close to 0.99
+
+
+
