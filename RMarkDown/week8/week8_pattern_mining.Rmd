@@ -1,0 +1,190 @@
+---
+title: "Data Mining- Practice 8 Association Patten Mining"
+author:
+- name: Rajesh Kalakoti
+  affiliation: 4
+- name: ', Sven Nomm'
+  affiliation: 1
+date: "`r format(Sys.time(), format='%Y-%m-%d %H:%M:%S %z')`"
+output:
+  pdf_document:
+    template: "~/Documents/data_mining_with_R/RMarkDown/lib/ieee-pandoc-template.tex"
+    includes:
+      in_header: ~/Documents/data_mining_with_R/RMarkDown/preamble.tex
+    keep_tex: yes
+    fig_caption: yes
+    pandoc_args:
+    - "--filter"
+    - "pandoc-crossref"
+    - "--natbib"
+  word_document: default
+  html_document:
+    df_print: paged
+abstract: |
+  Association Pattern Mining is a data mining technique used to discover interesting relationships, patterns, associations, or correlations among sets of items in large databases. These relationships are typically hidden within the data and can provide valuable insights into consumer behavior, market basket analysis, and various other domains.
+
+bibliography: IEEEabrv,./library
+affiliation:
+- key: 1
+  name: Taltech, Estonia, 12616
+- key: 4
+  name: 'Email: rajesh.kalakoti@outlook.com'
+classoption: conference
+link-citations: yes
+reference-section-title: References
+papersize: a4paper
+natbib: yes
+documentclass: IEEEtran
+eqnPrefix:
+- ''
+- ''
+figPrefix:
+- figure
+- figures
+tblPrefix:
+- table
+- tables
+secPrefix:
+- section
+- sections
+autoSectionLabels: yes
+---
+```{r setup, include=F}
+library(pander)
+library(knitr)
+# where the figures will be
+opts_chunk$set(fig.path='figure/')
+# code chunk options: tidy; wrap at 40 characters
+opts_knit$set(tidy=T, tidy.opts=list(width.cutoff=40))
+
+# Some helpful latex-generating functions for when you need more control.
+# Optional.
+ 
+# Helpful for latex lables
+library(xtable)
+options(xtable.caption.placement='top',
+        xtable.table.placement='!t',
+        xtable.include.rownames=F,
+        xtable.comment=F)
+
+#' Outputs LaTeX code for a figure environment with caption and label and placement
+#'
+#' The RMD -> MD conversion drops `fig.pos` and labels when you run knitr so I
+#' need to output LaTeX explicitly.
+#'
+#' Use Hmisc or xtab if you want tables.
+#'
+#' If you want to do subfigures (using subfloat) then provide multiple filenames;
+#'  the first element of the caption is the overall and the rest are individual.
+#' @family pandoc helpers
+#' @export
+# TODO: vectorise label in the same way as width, caption
+# TODO: use \hfil between the \subfloat s for equal spacing (as in bare_conf.tex)
+latex.figure <- function (fname, caption, label, placement='!t', floating=F, width='\\columnwidth', subfloat=length(fname) > 1, linebreaks.after=NULL) {
+    if (subfloat && length(caption) == length(fname))
+        caption <- c('', caption)
+    else if (length(caption) > 1 && length(caption) != length(fname) && length(caption) != length(fname) + 1)
+        stop("Length of filenames doesn't match length of captions (+1 if subfloat)")
+    cat(sprintf('\\begin{figure%s}[%s]%%\n\\centering%%\n',
+                ifelse(floating, '*', ''), placement))
+    figs <- sprintf('\\includegraphics[width=%s]{%s}', width, fname)
+    if (subfloat)
+        figs <- sprintf('\\subfloat[%s]{%s}', caption[2:(length(fname) + 1)], figs)
+    if (!is.null(linebreaks.after)) {
+        figs[linebreaks.after] <- paste0(figs[linebreaks.after], '\\\\')
+    }
+    figs <- paste0(figs, '%')
+    cat(figs, sep='\n')
+    # TODO should omit \caption{} if not provided for subfloat (also for normal pics)
+    cat(sprintf('\\caption{%s}%%\n\\label{%s}%%\n\\end{figure%s}\n',
+        caption[1], label, ifelse(floating, '*', '')))
+}
+```
+
+# Introduction 
+
+Let U be the \(d\)-dimensional universe of elements (goods offered by the supermarket) and \(T\) is the set of transactions \(T_1, \ldots, T_n\). They said that transaction \(T_i\) is drawn on the universe of items \(U\). \(T_i\) may be represented by \(d\)-dimensional binary record. Itemset is the set of items. \(k\)-itemset is the itemset containing exactly \(k\)-items.
+
+
+Frequent Pattern Mining is a critical technique in data mining and has several models and algorithms designed to discover patterns within datasets. 
+
+
+## The Frequent Pattern Mining Model
+
+### Definition
+**Support:** The support of an itemset \(I\) is defined as the fraction of the transactions in the database \(T = \{T_1, \ldots, T_n\}\) that contain \(I\) as the subset. The support of the itemset \(I\) is defined by \(sup(I)\). Not to be confused with supremum.
+
+### Definition
+**Frequent Itemset Mining:** Given a set of transactions \(T = \{T_1, \ldots, T_n\}\) where each transaction \(T_i\) is drawn on the universe of elements \(U\), determine all itemsets \(I\) that occur as a subset of at least a predefined fraction \(minsup\) of the transactions in \(T\). The predefined fraction \(minsup\) is referred to as minimal support.
+
+
+```{r, }
+library(here)
+file_path = here("data","groceries.csv")
+df = read.csv(file_path,header = FALSE)
+dim(df)
+```
+
+```{r xtable, results='asis'}
+ print(xtable(
+   df,
+   caption='Example of the iris dataset',
+   label='tbl:iris.xtable',
+   align=c(rep('r', 5), 'l')))
+```
+
+
+
+### Definition
+
+**Frequent Itemset Mining (Set-wise):** Given a set of sets \(T = \{T_1, \ldots, T_n\}\), where each transaction \(T_i\) is drawn on the universe of elements \(U\), determine all sets \(I\) that occur as a subset of at least a predefined fraction \(minsup\) of the sets in \(T\).
+
+**Support Monotonicity Property:** The support of every subset \(J\) of \(I\) is at least equal to the support of itemset \(I\): \(sup(J) \geq sup(I)\) for all \(J \subset I\).
+
+**Downward Closure Property:** Every subset of the frequent itemset is also frequent.
+
+### Definition
+
+**Maximal Frequent Itemsets:** A frequent itemset is maximal at a given minimum support level \(minsup\), if it is frequent and no superset of it is frequent.
+
+
+
+## Association Rule Generation Framework
+
+Informal definition
+
+If the presence of item set \(X\) in certain transaction(s) leads (implies) the presence of the set of items \(Y\) in the same transaction(s), then we talk about the rule \(X \Rightarrow Y\).
+
+### Definition
+
+**Confidence:** Let \(X\) and \(Y\) be two sets of items. The confidence of the rule \(X \Rightarrow Y\) is the conditional probability of \(X \cup Y\) occurring in a transaction, given that the transaction contains \(X\).
+
+\[
+\text{conf}(X \Rightarrow Y) = \frac{\text{sup}(X \cup Y)}{\text{sup}(X)}
+\]
+
+### Definition
+
+**Association Rule:** Let \(X\) and \(Y\) be two sets of items. Then, the rule \(X \Rightarrow Y\) is said to be an association rule at a minimum support of \(minsup\) and minimum confidence \(minconf\) if it satisfies the following conditions:
+
+1. \(\text{sup}(X \cup Y) \geq minsup\)
+2. \(\text{conf}(X \Rightarrow Y) \geq minconf\)
+
+## Frequent Itemset Mining Algorithms
+
+There are several algorithms used for frequent itemset mining:
+
+### 1. Brute Force Algorithms
+
+Brute force algorithms exhaustively search through all possible itemsets to find frequent ones. This method can be computationally intensive and is generally not efficient for large datasets.
+
+### 2. The Apriori Algorithm
+
+The Apriori algorithm is a classic method for frequent itemset mining. It uses an iterative approach and prior knowledge of smaller frequent itemsets to find larger ones. The key idea is that if an itemset is frequent, all of its subsets must also be frequent. The Apriori algorithm uses this property to reduce the search space and improve efficiency.
+
+### 3. Enumeration-Tree Algorithms
+
+Enumeration-tree algorithms utilize tree structures to enumerate and discover frequent itemsets efficiently. One common approach is using Recursive Suffix-Based Pattern Growth Methods. These methods involve recursively building a tree-like structure where each node represents an item and its frequency. By exploring the tree, these algorithms efficiently identify frequent itemsets.
+
+These algorithms form the backbone of frequent itemset mining, each with its advantages and use cases.
+
