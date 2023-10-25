@@ -186,6 +186,5 @@ The Apriori algorithm is a classic method for frequent itemset mining. It uses a
 
 Enumeration-tree algorithms utilize tree structures to enumerate and discover frequent itemsets efficiently. One common approach is using Recursive Suffix-Based Pattern Growth Methods. These methods involve recursively building a tree-like structure where each node represents an item and its frequency. By exploring the tree, these algorithms efficiently identify frequent itemsets.
 
-These algorithms form the backbone of frequent itemset mining, each with its advantages and use cases.
-
+These algorithms form the backbone of frequent itemset mining, each with its advantages and use cases
 
