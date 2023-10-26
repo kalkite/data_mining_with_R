@@ -119,15 +119,18 @@ Frequent Pattern Mining is a critical technique in data mining and has several m
 
 
 ```{r, }
-library(here)
-file_path = here("data","groceries.csv")
-df = read.csv(file_path,header = FALSE)
-dim(df)
+data <- data.frame(
+  V1 = c(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12),
+  V2 = c("Milk", "Milk", "Bread", "Milk", "Bread", "Milk", "Milk", "Milk", "Bread", "Milk", "Milk", "Milk"),
+  V3 = c("Egg", "Butter", "Butter", "Bread", "Butter", "Bread", "Cookies", "Bread", "Butter", "Butter", "Bread", "Bread"),
+  V4 = c("Bread", "Egg", "Ketchup", "Butter", "Cookies", "Butter", NA, "Butter", "Egg", "Bread", "Butter", "Cookies"),
+  V5 = c("Butter", "Ketchup", NA, NA, NA, "Cookies", NA, NA, "Cookies", NA, NA, "Ketchup")
+)
 ```
 
 ```{r xtable, results='asis'}
  print(xtable(
-   df,
+   data,
    caption='Example of the iris dataset',
    label='tbl:iris.xtable',
    align=c(rep('r', 5), 'l')))
@@ -187,4 +190,24 @@ The Apriori algorithm is a classic method for frequent itemset mining. It uses a
 Enumeration-tree algorithms utilize tree structures to enumerate and discover frequent itemsets efficiently. One common approach is using Recursive Suffix-Based Pattern Growth Methods. These methods involve recursively building a tree-like structure where each node represents an item and its frequency. By exploring the tree, these algorithms efficiently identify frequent itemsets.
 
 These algorithms form the backbone of frequent itemset mining, each with its advantages and use cases
+
+
+Today, we will see how aprori algorithm works. 
+
+## Apriori Algorithm
+
+The **Apriori algorithm** is a classic algorithm used for frequent itemset mining and association rule learning in data mining and machine learning. It discovers interesting relationships hidden in large datasets. Here's the algorithm description:
+
+
+```{r}
+library(arules)
+# Convert the data frame to transactions format
+transactions <- as(data, "transactions")
+
+# Apply Apriori algorithm
+frequent_itemsets <- apriori(transactions, parameter = list(support = 0.33, confidence = 0.5))
+
+# Print frequent itemsets
+inspect(frequent_itemsets)
+```
 
