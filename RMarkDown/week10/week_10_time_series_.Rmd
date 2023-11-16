@@ -1,0 +1,712 @@
+---
+title: "Data Mining- Practice 10 Time Series"
+author:
+- name: Rajesh Kalakoti
+  affiliation: 4
+- name: ', Sven Nomm'
+  affiliation: 1
+date: "`r format(Sys.time(), format='%Y-%m-%d %H:%M:%S %z')`"
+output:
+  pdf_document:
+    template: "~/Documents/data_mining_with_R/RMarkDown/lib/ieee-pandoc-template.tex"
+    includes:
+      in_header: ~/Documents/data_mining_with_R/RMarkDown/preamble.tex
+    keep_tex: yes
+    fig_caption: yes
+    pandoc_args:
+    - "--filter"
+    - "pandoc-crossref"
+    - "--natbib"
+  word_document: default
+  html_document:
+    df_print: paged
+abstract: |
+ Welcome, everyone, to today's practice session on data mining with a focus on time series analysis using R. Time series data, characterized by observations recorded over time.  We'll leverage several essential libraries to perform various analyses, including Tstudio, Date, Linear Regression, and Random Forest Forecasting.
+
+bibliography: IEEEabrv,./library
+affiliation:
+- key: 1
+  name: Taltech, Estonia, 12616
+- key: 4
+  name: 'Email: rajesh.kalakoti@outlook.com'
+classoption: conference
+link-citations: yes
+reference-section-title: References
+papersize: a4paper
+natbib: yes
+documentclass: IEEEtran
+eqnPrefix:
+- ''
+- ''
+figPrefix:
+- figure
+- figures
+tblPrefix:
+- table
+- tables
+secPrefix:
+- section
+- sections
+autoSectionLabels: yes
+---
+```{r setup, include=F}
+library(pander)
+library(knitr)
+# where the figures will be
+opts_chunk$set(fig.path='figure/')
+# code chunk options: tidy; wrap at 40 characters
+opts_knit$set(tidy=T, tidy.opts=list(width.cutoff=40))
+
+# Some helpful latex-generating functions for when you need more control.
+# Optional.
+ 
+# Helpful for latex lables
+library(xtable)
+options(xtable.caption.placement='top',
+        xtable.table.placement='!t',
+        xtable.include.rownames=F,
+        xtable.comment=F)
+
+#' Outputs LaTeX code for a figure environment with caption and label and placement
+#'
+#' The RMD -> MD conversion drops `fig.pos` and labels when you run knitr so I
+#' need to output LaTeX explicitly.
+#'
+#' Use Hmisc or xtab if you want tables.
+#'
+#' If you want to do subfigures (using subfloat) then provide multiple filenames;
+#'  the first element of the caption is the overall and the rest are individual.
+#' @family pandoc helpers
+#' @export
+# TODO: vectorise label in the same way as width, caption
+# TODO: use \hfil between the \subfloat s for equal spacing (as in bare_conf.tex)
+latex.figure <- function (fname, caption, label, placement='!t', floating=F, width='\\columnwidth', subfloat=length(fname) > 1, linebreaks.after=NULL) {
+    if (subfloat && length(caption) == length(fname))
+        caption <- c('', caption)
+    else if (length(caption) > 1 && length(caption) != length(fname) && length(caption) != length(fname) + 1)
+        stop("Length of filenames doesn't match length of captions (+1 if subfloat)")
+    cat(sprintf('\\begin{figure%s}[%s]%%\n\\centering%%\n',
+                ifelse(floating, '*', ''), placement))
+    figs <- sprintf('\\includegraphics[width=%s]{%s}', width, fname)
+    if (subfloat)
+        figs <- sprintf('\\subfloat[%s]{%s}', caption[2:(length(fname) + 1)], figs)
+    if (!is.null(linebreaks.after)) {
+        figs[linebreaks.after] <- paste0(figs[linebreaks.after], '\\\\')
+    }
+    figs <- paste0(figs, '%')
+    cat(figs, sep='\n')
+    # TODO should omit \caption{} if not provided for subfloat (also for normal pics)
+    cat(sprintf('\\caption{%s}%%\n\\label{%s}%%\n\\end{figure%s}\n',
+        caption[1], label, ifelse(floating, '*', '')))
+}
+```
+
+# Let's start with Date and Time objects. 
+The base package, one of R's core packages, provides two types of date and time classes:
+
+- **Date:** this is a simple representation of a calendar date following the ISO 8601 international standard format (or the Gregorian calendar format) using the YYYY-m-d date format. 
+- **POSIXct/POSIXlt:** Also known as the DateTime classes (that is, they represent both date and time), these are two POSIX date/time classes that represent the calendar date, the time of the day, and the time zone using the ISO 8601
+international standard format of YYYY-m-d H:M:S. 
+
+let's see some examples, and By default, the Sys.time function returns an object of the POSIXct, POSIXt, or POSIXct
+class. We can use the as.POSIXlt function to convert the object to a POSIXlt object:
+
+```{r}
+
+
+# Get the current date
+date <- Sys.Date()
+
+# Get the current date and time
+time_ct <- Sys.time()
+
+# Print the results
+print(paste("Current Date:",
+            date))
+print(paste("Current Date and Time:", 
+            time_ct))
+# POSIXLT format 
+time_lt <- as.POSIXlt(time_ct)
+print(paste(time_lt))
+
+# Create a Date object
+date <- as.Date("2014-5-12")
+
+# Print the date
+print(date)
+
+# Create a POSIXct object
+time_ct <- as.POSIXct("2014-5-12 20:05:35",
+                      tz = "EST")
+# Print the original and updated date and time
+cat("Time (EST):", time_ct, "\n")
+
+```
+
+## importing date and time objects 
+
+
+```{r}
+library(here)
+date_file = here("data", 
+                 "dates_formats.csv")
+dates_df <-read.csv(
+  date_file, stringsAsFactors = FALSE)
+print(paste(dim(dates_df)))
+```
+
+
+```{r, xtable, results='asis'}
+dates_df$Japanese_format_new <- as.Date(
+  dates_df$Japanese_format)
+print(xtable(
+  head(dates_df[, c("Japanese_format", 
+                  "Japanese_format_new")]),
+  caption='convert the date format',
+   label='tbl:iris.xtable',
+   align=c(rep('r', 2), 'l')))
+
+```
+
+Going back to the dates_df data frame, we will use the format argument to reformat and
+convert the other date objects in the table. The second column represents the US date
+format, which is MDY:
+
+Since this format is different from the ISO 8601 format, we will add the format argument
+to map the date component properly:
+
+```{r}
+dates_df$US_format_new <- as.Date(
+  dates_df$US_format, format = "%m/%d/%Y"
+  )
+dates_df$US_long_format[1]
+```
+```{r}
+# handling numeric objects 
+date1 <- as.Date("1970-01-01")
+date2 <- Sys.Date()
+print(c(date1, date2))
+#Time zone setting
+Sys.timezone()
+```
+
+**lubridate** package  Make Dealing with Dates a Little Easier. see an example , let's use the ymd_hms (which stands for a year, month, day, hour, minute, and second) conversion function from the **lubridate** package to convert the object to a POSIXct object:
+
+```{r,message=FALSE}
+time_US_str <- "Monday,December 31,2018 11:59:59 PM"
+print(paste(time_US_str))
+#install.packages("lubridate")
+library(lubridate)
+time_lubridate <- mdy_hms(time_US_str, 
+                          tz = "EST")
+print(time_lubridate)
+```
+**The Natural Gas Consumption dataset**
+
+we will use the Natural Gas Consumption (NGC) dataset as an example of time series data. This dataset represents the quarterly consumption of natural gas in the US between 2000 and 2018. We will use the Quandl package to load the data from the Federal Reserve Bank of St. Louis database (FRED)
+
+```{r,message=FALSE}
+library(Quandl)
+NGC <-Quandl(code = "FRED/NATURALGAS",
+collapse="quarterly",
+type = "ts",
+end_date = "2018-12-31")
+class(NGC)
+```
+
+In R, a ts (time series) object is a specific data structure designed to handle time series data. 
+plotting the dataset 
+```{r}
+print(paste("lenght of ngc",length(NGC)))
+plot.ts(NGC,
+main = "US Quarterly Natural Gas Consumption",
+ylab = "Billion of Cubic Feet")
+```
+The the above diagram shows us the quarterly consumption of natural gas in the US between 2000-2017
+
+The main characteristics of regular time series data is as follows:
+
+- Cycle/period: A regular and repeating unit of time that splits the series into consecutive and equally long subsets (for example, for monthly series, a full cycle would be a year).
+- Frequency: Defines the length or the number of units of the cycle (for example, for quarterly series, the frequency is four).
+- Timestamp: Provides the time each observation in the series was captured and can be used as the series index. By definition, in a regular time series, the time difference (or delta) between two consecutive observations must be equal.
+
+a \textcolor{red}{ts.} object is consists of two elements—the series values and its corresponding timestamp. In addition, it also has several attributes, such as the series, cycle, frequency, and the time interval between each consecutive observation
+
+\textcolor{red}{TSstudio}  package provides a concise summary of ts object in R. 
+
+```{r}
+library(TSstudio)
+ts_info(NGC)
+```
+
+**Multivariate time series (mts) objects**
+
+In some instances, such as correlation analysis, you may need to work with multivariate time series objects. In those cases, working with ts objects (assuming that all the series have the same frequency and overlap between their indices) may be cumbersome, as each series is required to be processed individually. Alternatively, you can use the \textcolor{red}{mts} (multiple time series) class, an extension of the \textcolor{red}{ts.} class. The\textcolor{red}{mts} class is a combination of the ts and matrix classes, and its advantage is that it shares the attributes of both those classes.
+
+The Coffee_Prices dataset from the TSstudio package is an example of an mts object. This \textcolor{red}{mts} object represents the monthly prices (USD per kg) between 1960 and 2018 of Robusta and Arabica, two popular coffee species:
+
+```{r}
+data(Coffee_Prices)
+print(paste(ts_info(Coffee_Prices)))
+class(Coffee_Prices)
+```
+
+you cans usefunctions, such as the frequency, time, start, or end functions
+
+
+```{r}
+# returns the frequency 
+frequency(Coffee_Prices)
+# calculates the time difference (delta) 
+#between two consecutive observations
+deltat(Coffee_Prices)
+head(time(Coffee_Prices))
+#  cycle represents the repeating 
+# pattern in the time series, 
+head(cycle(Coffee_Prices))
+```
+
+```{r}
+# create dummy ts object 
+# The series values
+my_ts1 <- ts(data = 1:60, 
+start = c(2010, 1), # The time of the first observation
+end = c(2014, 12), # The time of the last observation
+frequency = 12) # The Series frequency
+ts_info(my_ts1)
+```
+
+\textcolor{red}{window} function from \textcolor{red}{ts} object 
+
+```{r}
+window(NGC, start = c(2005,1), end = c(2005, 4))
+```
+
+Similarly, we can extract a specific frequency unit from the series. For example, let's assume that we are interested in extracting all the observations of the series that occurred in the **third quarter** of the year.
+
+
+```{r}
+window(NGC, start = c(2000, 3), frequency = 1)
+```
+
+**aggregate data** 
+```{r}
+NGC_year <- aggregate(NGC, nfrequency = 1,
+                      FUN = "sum")
+```
+
+## visulization 
+—the monthly total vehicle sales and the unemployment rate in the US. In addition, the data includes the timestamp of the two series in Date format.
+```{r, message=FALSE}
+library(dplyr)
+data(US_indicators)
+tvs <- US_indicators[, c("Date", "Vehicle Sales")]
+tvs <- tvs %>% arrange(Date)
+head(tvs)
+```
+```{r}
+start_point <- c(year(min(tvs$Date)),
+                 month(min(tvs$Date)))
+tvs_ts <- ts(data = tvs$`Vehicle Sales`,
+start = start_point,
+frequency = 12)
+head(tvs$Date, 5)
+```
+
+```{r}
+plot.ts(tvs_ts,
+main = "US Monthly Total Vehicle Sales",
+ylab = "Thousands of Vehicle",
+xlab = "Time"
+)
+```
+
+```{r}
+US_indicators_ts <- ts(data = US_indicators[, c("Vehicle Sales",
+"Unemployment Rate")],
+start = c(year(min(tvs$Date)),
+month(min(tvs$Date))),
+frequency = 12)
+```
+
+
+```{r}
+plot.ts(US_indicators_ts,
+plot.type = "multiple",
+main = "US Monthly Vehicle Sales vs. Unemployment Rate",
+xlab = "Time")
+```
+```{r}
+#library(dygraphs)
+#dygraph(tvs_ts,
+#main = "US Monthly Total Vehicle Sales",
+#ylab = "Thousands of Vehicle") %>%
+#dyRangeSelector()
+```
+```{r}
+# dygraph(US_indicators_ts,
+# main = "US Monthly Vehicle Sales vs. Unemployment Rate") %>%
+# dyAxis("y", label = "Vehicle Sales") %>%
+# dyAxis("y2", label = "Unemployment Rate") %>%
+# dySeries("Vehicle Sales", axis = 'y', color = "green") %>%
+# dySeries("Unemployment Rate", axis = 'y2', color = "red") %>%
+# dyLegend(width = 400)
+```
+
+
+```{r}
+# library(TSstudio)
+# ts_plot(tvs_ts,
+# title = "US Monthly Total Vehicle Sales",
+# Ytitle = "Thousands of Vehicle",
+# slider = TRUE
+# )
+```
+
+
+
+```{r}
+# ts_plot(US_indicators_ts,
+# title = "US Monthly Vehicle Sales vs. Unemployment Rate",
+# type = "multiple")
+```
+
+you can check \textcolor{red}{zoom and xts} packages also. 
+
+
+The `zoo` package provides a framework for working with regular and irregular time series data. This includes the `zoo` class, an indexed object for storing time series data, and a set of functions for creating, preprocessing, and visualizing time series data. Similar to the `ts` and `mts` classes, the `zoo` class is comprised of two components:
+
+1. **Data Structure:** A vector (for univariate time series data) or matrix (for multivariate time series data) format.
+
+2. **Index Vector:** This stores the series observation's corresponding index.
+
+
+# Forecasting with Linear Regression 
+
+```{r}
+library(TSstudio)
+data(USgas)
+```
+
+```{r}
+# ts_plot(USgas,
+# title = "US Monthly Natural Gas consumption",
+# Ytitle = "Billion Cubic Feet",
+# Xtitle = "Year")
+```
+
+```{r}
+ts_info(USgas)
+```
+
+```{r}
+# ts_decompose(USgas)
+```
+—the **decomposition** process of time series data to its components: the
+trend, seasonal, and random components. We will start with the moving average function
+and see its applications for smoothing time series data, removing seasonality, and
+estimating a series trend
+
+n time series decomposition, the **trend** component represents the long-term systematic pattern or direction of the data. The **seasonal** component captures repetitive patterns or cycles occurring at fixed intervals. The **random** component, also known as the residual, accounts for unexplained variations or noise in the data.
+
+```{r}
+# transform the series from
+# a ts object to a data.frame
+USgas_df <- ts_to_prophet(USgas)
+
+```
+
+
+
+```{r,  results='asis'}
+print(xtable(
+  head(USgas_df),
+  caption='US gas ',
+   label='tbl:iris.xtable',
+   align=c(rep('r', 2), 'l')))
+```
+After we transform the series into a data.frame object, we can start to create the regression input features. The first feature we will create is the series trend. 
+```{r}
+USgas_df$trend <- 1:nrow(USgas_df)
+```
+We will use the month function from the lubridate package to extract the month of the year from
+the ds date variable:
+
+
+```{r}
+library(lubridate)
+USgas_df$seasonal <- factor(
+  month(USgas_df$ds, label = T), ordered = FALSE)
+```
+
+```{r,results='asis'}
+print(xtable(
+  head(USgas_df),
+  caption='US gas ',
+   label='tbl:iris.xtable',
+   align=c(rep('r', 4), 'l')))
+```
+we start to regress the series with those features, we will split the series into a training and testing partition. We will set the last 12 months of the series as a testing partition:
+
+
+```{r}
+h <- 12 # setting a testing partition length
+train <- USgas_df[1:(
+  nrow(USgas_df) - h), ]
+test <- USgas_df[(
+  nrow(USgas_df) - h + 1):nrow(USgas_df), ]
+```
+
+## Modeling the series trend and seasonal components
+
+```{r}
+md_trend <- lm(y ~ trend, data = train)
+summary(md_trend)
+```
+As you can see from the preceding regression output, the coefficient of the trend variable is statistically significant to a level of 0.001. However, the adjusted R-squared of the regression is fairly low, w
+
+from the preceding regression output,The p-value provides the probability that we will reject the null hypothesis given it is actually true, or the type I error.  Therefore, for the p-value smaller than , the threshold value, we will reject the null hypothesis with a level of significance of , where typical values of are 0.1, 0.05, 0.01, and so on.
+
+
+```{r}
+train$yhat <- predict(md_trend, newdata = train)
+test$yhat <- predict(md_trend, newdata = test)
+```
+
+```{r}
+library(plotly)
+plot_lm <- function(data, train, test, title = NULL){
+p <- plot_ly(data = data,
+x = ~ ds,
+y = ~ y,
+type = "scatter",
+mode = "line",
+name = "Actual") %>%
+add_lines(x = ~ train$ds,
+y = ~ train$yhat,
+line = list(color = "red"),
+name = "Fitted") %>%
+add_lines(x = ~ test$ds,
+y = ~ test$yhat,
+line = list(color = "green", dash = "dot",
+            width = 3),
+name = "Forecasted") %>%
+layout(title = title,
+xaxis = list(title = "Year"),
+yaxis = list(title = "Billion Cubic Feet"),
+legend = list(x = 0.05, y = 0.95))
+return(p)
+}
+```
+
+```{r}
+# plot_lm(data = USgas_df,
+# train = train,
+# test = test,
+# title = "Predicting the Trend Component of the Series")
+```
+
+ the model was able to capture the general movement of the trend, we will see an advanced method to capture a non-linear trend.
+ 
+ for comparison analysis, we want to measure the model error rate both in the training and the testing sets:
+
+
+```{r}
+mape_trend <- c(mean(abs(
+  train$y - train$yhat) / train$y),
+mean(abs(test$y - test$yhat) / test$y))
+```
+
+The process of modeling and forecasting the seasonal component follows the same process
+as we applied with the trend, by regressing the series with the seasonal variable we created
+```{r}
+md_seasonal <- lm(y ~ seasonal, 
+                  data = train)
+summary(md_seasonal)
+```
+
+
+```{r}
+train$yhat <- predict(md_seasonal, newdata = train)
+test$yhat <- predict(md_seasonal, newdata = test)
+```
+
+
+```{r}
+# plot_lm(data = USgas_df,
+# train = train,
+# test = test,
+# title = "Predicting the Seasonal Component of the Series")
+```
+
+```{r}
+mape_seasonal <- c(mean(abs(train$y - train$yhat) / train$y),
+mean(abs(test$y - test$yhat) / test$y))
+mape_seasonal
+```
+
+The high error rate on the testing set is related to the trend component that was not included in the model. The next step is to join the two components into one model and to forecast the feature values of the series:
+
+
+**tslm** function 
+
+```{r}
+library(forecast)
+USgas_split <- ts_split(USgas, sample.out = h)
+train.ts <- USgas_split$train
+test.ts <- USgas_split$test
+md3 <- tslm(train.ts ~ season + trend + I(trend^2))
+summary(md3)
+```
+
+# Forcasting 
+
+```{r}
+
+# -------- Code Chank 1 --------
+library(TSstudio)
+
+data(USVSales)
+# -------- Code Chank 2 --------
+ts_info(USVSales)
+# -------- Code Chank 3 --------
+ts_plot(USVSales,
+        title = "US Total Monthly Vehicle Sales",
+        Ytitle = "Thousands of Units",
+        Xtitle = "Year")
+# -------- Code Chank 4 --------
+ts_decompose(USVSales)
+# -------- Code Chank 5 --------
+USVSales_detrend <- USVSales - decompose(USVSales)$trend
+
+ts_seasonal(USVSales_detrend, type = "box")
+# -------- Code Chank 7 --------
+ts_lags(USVSales, lags = c(12, 24, 36))
+# -------- Code Chank 8 --------
+df <- ts_to_prophet(window(USVSales, start = c(2010,1))) 
+
+names(df) <- c("date", "y")
+
+head(df)
+# -------- Code Chank 9 --------
+ts_plot(df,
+        title = "US Total Monthly Vehicle Sales (Subset)",
+        Ytitle = "Thousands of Units",
+        Xtitle = "Year")
+# -------- Code Chank 10 --------
+library(dplyr)
+library(lubridate)
+
+df <- df %>% mutate(month = factor(lubridate::month(date, label = TRUE), ordered = FALSE),
+                    lag12 = lag(y, n = 12)) %>%
+  filter(!is.na(lag12))
+# -------- Code Chank 11 --------
+df$trend <- 1:nrow(df)
+df$trend_sqr <- df$trend ^ 2
+# -------- Code Chank 12 --------
+str(df)
+# -------- Code Chank 13 --------
+h <- 12
+train_df <- df[1:(nrow(df) - h), ]
+test_df <- df[(nrow(df) - h + 1):nrow(df), ]
+# -------- Code Chank 14 --------
+forecast_df <- data.frame(date = seq.Date(from = max(df$date) + lubridate::month(1),
+                                          length.out = h, by = "month"),
+                          trend = seq(from = max(df$trend) + 1, length.out = h, by = 1))
+forecast_df$trend_sqr <- forecast_df$trend ^ 2
+
+# to avoid conflict with the h2o `month` function use the "lubridate::month" to explicly call the month from the lubridate function 
+forecast_df$month <- factor(lubridate::month(forecast_df$date, label = TRUE), ordered= FALSE) 
+forecast_df$lag12 <- tail(df$y, 12)
+
+# -------- Code Chank 15 --------
+lr <- lm(y ~ month + lag12 + trend + trend_sqr, data = train_df)
+# -------- Code Chank 16 --------
+summary(lr)
+# -------- Code Chank 17 --------
+test_df$yhat <- predict(lr, newdata = test_df)
+
+mape_lr <- mean(abs(test_df$y - test_df$yhat) / test_df$y)
+mape_lr
+# -------- Code Chank 18 --------
+library(h2o)
+
+h2o.init(max_mem_size = "16G")
+
+# -------- Code Chank 19--------
+train_h <- as.h2o(train_df)
+test_h <- as.h2o(test_df)
+forecast_h <- as.h2o(forecast_df)
+
+# -------- Code Chank 20 --------
+x <- c("month", "lag12", "trend", "trend_sqr")
+y <- "y"
+# -------- Code Chank 21 --------
+rf_md <- h2o.randomForest(training_frame = train_h,
+                          nfolds = 5,
+                          x = x,
+                          y = y,
+                          ntrees = 500,
+                          stopping_rounds = 10,
+                          stopping_metric = "RMSE",
+                          score_each_iteration = TRUE,
+                          stopping_tolerance = 0.0001,
+                          seed = 1234)
+# -------- Code Chank 22 --------
+h2o.varimp_plot(rf_md)
+# -------- Code Chank 23 --------
+rf_md@model$model_summary
+# -------- Code Chank 24 --------
+library(plotly)
+
+tree_score <- rf_md@model$scoring_history$training_rmse
+plot_ly(x = seq_along(tree_score), y = tree_score,
+        type = "scatter", mode = "line") %>%
+  layout(title = "Random Forest Model - Trained Score History",
+         yaxis = list(title = "RMSE"),
+         xaxis = list(title = "Num. of Trees"))
+# -------- Code Chank 25 --------
+test_h$pred_rf <- h2o.predict(rf_md, test_h)
+# -------- Code Chank 26--------
+test_1 <- as.data.frame(test_h)
+# -------- Code Chank 27 --------
+mape_rf <- mean(abs(test_1$y - test_1$pred_rf) / test_1$y)
+mape_rf
+# -------- Code Chank 28 --------
+# search_criteria_rf <- list(
+#   strategy = "RandomDiscrete",
+#   stopping_metric = "rmse",
+#   stopping_tolerance = 0.0001,
+#   stopping_rounds = 10,
+#   max_runtime_secs = 60 * 20
+# )
+
+# hyper_params_rf <- list(mtries = c(2, 3, 4),
+#                         sample_rate = c(0.632, 0.8, 0.95),
+#                         col_sample_rate_per_tree = c(0.5, 0.9, 1.0),
+#                         max_depth = c(seq(1, 30, 3)),
+#                         min_rows = c(1, 2, 5, 10))
+# 
+# search_criteria_rf <- list(strategy = "RandomDiscrete",
+#                            stopping_metric = "rmse",
+#                            stopping_tolerance = 0.0001,
+#                            stopping_rounds = 10,
+#                            max_runtime_secs = 60 * 20)
+
+# rf2 <- h2o.grid(algorithm = "randomForest",
+#                 search_criteria = search_criteria_rf,
+#                 hyper_params = hyper_params_rf,
+#                 x = x,
+#                 y = y,
+#                 training_frame = train_h,
+#                 ntrees = 5000,
+#                 nfolds = 5,
+#                 grid_id = "rf_grid",
+#                 seed = 1234)
+
+
+
+
+
+```
+
